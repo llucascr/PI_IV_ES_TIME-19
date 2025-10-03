@@ -1,8 +1,8 @@
 package com.puc.PI4.Software.Morango.api;
 
 import com.puc.PI4.Software.Morango.dto.request.PragaRequest;
-import com.puc.PI4.Software.Morango.models.mongodb.Praga;
-import com.puc.PI4.Software.Morango.repositories.mongodb.PragaRepository;
+import com.puc.PI4.Software.Morango.models.Praga;
+import com.puc.PI4.Software.Morango.repositories.PragaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

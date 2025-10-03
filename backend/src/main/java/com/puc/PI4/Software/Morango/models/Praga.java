@@ -1,4 +1,4 @@
-package com.puc.PI4.Software.Morango.models.mongodb;
+package com.puc.PI4.Software.Morango.models;
 
 import jakarta.persistence.Id;
 import lombok.*;
