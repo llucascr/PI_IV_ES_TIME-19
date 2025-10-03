@@ -9,9 +9,14 @@ import com.puc.PI4.Software.Morango.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -41,6 +46,17 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFound("User with id " + userId + " not found"));
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    public Page<UserResponse> listAllUsers(int page, int numberOfUsers) {
+        Pageable pageable = PageRequest.of(page, numberOfUsers);
+        Page<User> users = userRepository.findAll(pageable);
+
+        List<UserResponse> userResponses = users.getContent().stream()
+                .map(user -> modelMapper.map(user, UserResponse.class))
+                .toList();
+
+        return new PageImpl<>(userResponses, pageable, users.getTotalElements());
     }
 
 }

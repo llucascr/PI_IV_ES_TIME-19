@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/user")
@@ -23,6 +25,14 @@ public class UserController {
     @GetMapping("/listById")
     public ResponseEntity<UserResponse> listUserById(@RequestParam String userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.listUserById(userId));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<UserResponse>> listAllUsers(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfUsers
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.listAllUsers(page, numberOfUsers).getContent());
     }
 
 }
