@@ -9,14 +9,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "praga")
-public class Praga {
+@Document(collection = "user")
+public class User {
 
     @Id
     private String id;
 
-    private String nomeComum;
+    private String name;
+    private String email;
+    private String password;
 
-    private String nomeCientifico;
+    // TODO: idOrganizacao
 
 }
