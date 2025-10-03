@@ -37,4 +37,10 @@ public class UserService {
         return modelMapper.map(userRepository.save(user), UserResponse.class);
     }
 
+    public UserResponse listUserById(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFound("User with id " + userId + " not found"));
+        return modelMapper.map(user, UserResponse.class);
+    }
+
 }

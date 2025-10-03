@@ -6,10 +6,7 @@ import com.puc.PI4.Software.Morango.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +18,11 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequest));
+    }
+
+    @GetMapping("/listById")
+    public ResponseEntity<UserResponse> listUserById(@RequestParam String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.listUserById(userId));
     }
 
 }
