@@ -1,4 +1,53 @@
-name: pr.yml
+name: Pull Request Info [PR]
+
 on:
+  push:
+    branches:
+      - caio
+      - luis
+      - lucas
 
 jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: View Commit Information
+        run: |
+          echo "🔀 Push detectado na branch: ${{ github.ref_name }}"
+          echo "👤 Autor: ${{ github.actor }}"
+          echo "📦 Repositório: ${{ github.repository }}"
+          echo "🧬 SHA: ${{ github.sha }}"
+          echo "🔗 Commit URL: ${{ github.server_url }}/${{ github.repository_owner }}/${{ github.repository }}/commit/${{ github.sha }}"
+
+      - name: Notify Discord Success
+        if: success()
+        uses: appleboy/discord-action@master
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: "#1270b0"
+          username: "🔔 GitHub Actions - Notificação"
+          message: |
+            🚀 **Novo Push Realizado!**
+            👤 **Autor:** ${{ github.actor }}
+            🌿 **Branch:** ${{ github.ref_name }}
+            📦 **Repositório:** ${{ github.repository }}
+            🧬 **Commit:** [Ver no GitHub](${{ github.server_url }}/${{ github.repository_owner }}/${{ github.repository }}/commit/${{ github.sha }})
+            ✅ **Status:** ${{ job.status }}
+
+      - name: Notify Discord Failure
+        if: failure()
+        uses: appleboy/discord-action@master
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: "#b81d1d"
+          username: "⚠️ GitHub Actions - Erro"
+          message: |
+            💥 **Falha ao executar o workflow!**
+            👤 **Autor:** ${{ github.actor }}
+            🌿 **Branch:** ${{ github.ref_name }}
+            🧬 **Commit:** [Ver no GitHub](${{ github.server_url }}/${{ github.repository_owner }}/${{ github.repository }}/commit/${{ github.sha }})
+            ❌ **Status:** ${{ job.status }}
