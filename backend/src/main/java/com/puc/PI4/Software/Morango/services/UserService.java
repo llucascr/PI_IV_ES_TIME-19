@@ -59,4 +59,20 @@ public class UserService {
         return new PageImpl<>(userResponses, pageable, users.getTotalElements());
     }
 
+    public UserResponse updateUser(String userId, UserRequest userRequest) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFound("User with email " + userRequest.getEmail() + " not found"));
+
+        User userUpdated = User.builder()
+                .id(user.getId())
+                .name(userRequest.getName() != null ? userRequest.getName() : user.getName())
+                .email(userRequest.getEmail() != null ? userRequest.getEmail() : user.getEmail())
+                .password(userRequest.getPassword() != null ? userRequest.getPassword() : user.getPassword())
+                .createAt(user.getCreateAt())
+                .updateAt(LocalDateTime.now())
+                .build();
+
+        return modelMapper.map(userRepository.save(userUpdated), UserResponse.class);
+    }
+
 }

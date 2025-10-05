@@ -35,4 +35,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.listAllUsers(page, numberOfUsers).getContent());
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<UserResponse> updateUser(@RequestParam String userId, @RequestBody UserRequest userRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userId, userRequest));
+    }
+
 }
