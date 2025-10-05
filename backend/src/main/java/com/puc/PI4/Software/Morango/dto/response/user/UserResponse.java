@@ -17,4 +17,5 @@ public class UserResponse {
     private String password;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private Boolean active;
 }

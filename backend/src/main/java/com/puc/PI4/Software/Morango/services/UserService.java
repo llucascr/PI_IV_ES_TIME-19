@@ -37,6 +37,7 @@ public class UserService {
                 .email(userRequest.getEmail())
                 .password(userRequest.getPassword())
                 .createAt(LocalDateTime.now())
+                .active(true)
                 .build();
 
         return modelMapper.map(userRepository.save(user), UserResponse.class);
@@ -70,6 +71,7 @@ public class UserService {
                 .password(userRequest.getPassword() != null ? userRequest.getPassword() : user.getPassword())
                 .createAt(user.getCreateAt())
                 .updateAt(LocalDateTime.now())
+                .active(user.getActive())
                 .build();
 
         return modelMapper.map(userRepository.save(userUpdated), UserResponse.class);

@@ -22,6 +22,7 @@ public class User {
     private String password;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private Boolean active;
 
     // TODO: idOrganizacao
 
