@@ -54,7 +54,7 @@ public class OrganizationService {
         Organization organization = organizationRepository.findByCnpj(organizationCnpj).orElseThrow(
                 () ->  new OrganizationNotFound("Organization with cnpj " + organizationCnpj + " not found"));
 
-        user.setOrganization(organization);
+        user.setIdOrganization(organization.getId());
         organization.setEmployees(user);
 
         userRepository.save(user);

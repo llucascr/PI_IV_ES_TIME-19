@@ -42,7 +42,6 @@ public class UserService {
                 .createAt(LocalDateTime.now())
                 .active(true)
                 .role(RoleUser.USER)
-                .organization(new Organization())
                 .build();
 
         return modelMapper.map(userRepository.save(user), UserResponse.class);

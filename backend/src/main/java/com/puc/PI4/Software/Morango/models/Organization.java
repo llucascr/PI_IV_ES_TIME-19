@@ -31,7 +31,6 @@ public class Organization {
     private LocalDateTime updatedAt;
     private Boolean active;
 
-    @DBRef
     private List<User> employees = new ArrayList<>();
 
     public void setEmployees(User employees) {

@@ -27,7 +27,6 @@ public class User {
     private Boolean active;
     private RoleUser role;
 
-    @DBRef
-    private Organization organization;
+    private String idOrganization;
 
 }
