@@ -23,9 +23,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(postRequest));
     }
 
-    @GetMapping("/listById")
-    public ResponseEntity<PostResponse> listPosts(@RequestParam String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @GetMapping("/listByUser")
+    public ResponseEntity<List<PostResponse>> listAllPostsByUser(
+            @RequestParam String userId,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfPosts
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.listAllPostsByUser(page, numberOfPosts, userId).getContent());
     }
 
     @GetMapping("/list")

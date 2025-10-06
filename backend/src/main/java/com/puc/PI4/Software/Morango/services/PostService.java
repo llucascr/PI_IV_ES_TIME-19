@@ -43,7 +43,15 @@ public class PostService {
                 .userId(postRequest.getUserId())
                 .build();
 
-        return modelMapper.map(postRepository.save(post), PostResponse.class);
+        Post savedPost = postRepository.save(post);
+        PostResponse response = modelMapper.map(savedPost, PostResponse.class);
+        String ownerName = userRepository.findById(savedPost.getUserId())
+                .map(User::getName)
+                .orElse("Usuário Desconhecido");
+
+        response.setPostOwner(ownerName);
+
+        return response;
     }
 
     public PostResponse updatePost(String postId, PostRequest postRequest) {
@@ -60,7 +68,15 @@ public class PostService {
                 .userId(post.getUserId())
                 .build();
 
-        return modelMapper.map(postRepository.save(postUpdated), PostResponse.class);
+        Post savedPost = postRepository.save(postUpdated);
+        PostResponse response = modelMapper.map(savedPost, PostResponse.class);
+        String ownerName = userRepository.findById(savedPost.getUserId())
+                .map(User::getName)
+                .orElse("Usuário Desconhecido");
+
+        response.setPostOwner(ownerName);
+
+        return response;
 
     }
 
@@ -69,9 +85,36 @@ public class PostService {
         Page<Post> posts = postRepository.findAll(pageable);
 
         List<PostResponse> postResponses = posts.getContent().stream()
-                .map(post -> modelMapper.map(post, PostResponse.class))
+                .map(post -> PostResponse.builder()
+                        .postOwner(userRepository.findById(post.getUserId()).map(User::getName).orElse("Usuário Desconhecido"))
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .description(post.getDescription())
+                        .text(post.getText())
+                        .createAt(post.getCreateAt())
+                        .updateAt(post.getUpdateAt())
+                        .build())
                 .toList();
         return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
+    }
+
+    public Page<PostResponse> listAllPostsByUser(int page, int numberOfPosts, String userId) {
+        Pageable pageable = PageRequest.of(page, numberOfPosts);
+        Page<Post> posts = postRepository.findByUserId(userId, pageable);
+
+        List<PostResponse> postResponses = posts.getContent().stream()
+                .map(post -> PostResponse.builder()
+                        .postOwner(userRepository.findById(post.getUserId()).map(User::getName).orElse("Usuário Desconhecido"))
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .description(post.getDescription())
+                        .text(post.getText())
+                        .createAt(post.getCreateAt())
+                        .updateAt(post.getUpdateAt())
+                        .build())
+                .toList();
+        return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
+
     }
 
 }

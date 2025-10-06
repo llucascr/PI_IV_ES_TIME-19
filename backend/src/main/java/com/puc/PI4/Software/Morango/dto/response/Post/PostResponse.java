@@ -1,10 +1,7 @@
 package com.puc.PI4.Software.Morango.dto.response.Post;
 
 import com.puc.PI4.Software.Morango.models.Post;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PostResponse {
 
     private String id;
