@@ -1,10 +1,13 @@
 package com.puc.PI4.Software.Morango.services;
 
+import com.puc.PI4.Software.Morango.dto.enums.RoleUser;
 import com.puc.PI4.Software.Morango.dto.request.user.UserRequest;
 import com.puc.PI4.Software.Morango.dto.response.user.UserResponse;
 import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
+import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.models.User;
+import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,7 @@ public class UserService {
                 .password(userRequest.getPassword())
                 .createAt(LocalDateTime.now())
                 .active(true)
+                .role(RoleUser.USER)
                 .build();
 
         return modelMapper.map(userRepository.save(user), UserResponse.class);
