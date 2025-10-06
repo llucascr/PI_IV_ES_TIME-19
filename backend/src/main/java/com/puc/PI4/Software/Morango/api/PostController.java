@@ -44,4 +44,9 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(@RequestParam String postId, @RequestBody PostRequest postRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(postId, postRequest));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<PostResponse> deletePost(@RequestParam String postId, @RequestParam String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId, userId));
+    }
 }

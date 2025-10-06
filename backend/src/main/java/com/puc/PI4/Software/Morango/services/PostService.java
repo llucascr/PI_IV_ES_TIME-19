@@ -80,6 +80,23 @@ public class PostService {
 
     }
 
+    public PostResponse deletePost(String postId, String userId) {
+        Post post = postRepository.findByUserAndPostId(userId ,postId).orElseThrow(
+                ()-> new PostNotFound("Post not found"));
+
+        postRepository.delete(post);
+        String ownerName = userRepository.findById(post.getUserId())
+                .map(User::getName)
+                .orElse("Usuário Desconhecido");
+
+        PostResponse response = modelMapper.map(post, PostResponse.class);
+
+        response.setPostOwner(ownerName);
+
+        return response;
+
+    }
+
     public Page<PostResponse> listAllPosts(int page, int numberOfPosts){
         Pageable pageable = PageRequest.of(page, numberOfPosts);
         Page<Post> posts = postRepository.findAll(pageable);
