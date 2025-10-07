@@ -60,14 +60,13 @@ public class OrganizationService {
         userRepository.save(user);
         organizationRepository.save(organization);
 
-        List<UserResponse> userResponses = organization.getEmployees().stream()
-                .map(u -> modelMapper.map(user, UserResponse.class))
-                .toList();
+        return modelMapper.map(organizationRepository.save(organization), EmployeesOrganizationResponse.class);
+    }
 
-        return EmployeesOrganizationResponse.builder()
-                .nameOrganization(organization.getName())
-                .employees(userResponses)
-                .build();
+    public OrganizationResponse listOrganizationById(String organizationId) {
+        Organization organization = organizationRepository.findById(organizationId).orElseThrow(
+                () -> new  OrganizationNotFound("Organization with id " + organizationId + " not found"));
+        return modelMapper.map(organization, OrganizationResponse.class);
     }
 
 }

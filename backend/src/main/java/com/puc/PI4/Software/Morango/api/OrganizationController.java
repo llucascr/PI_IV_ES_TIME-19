@@ -28,4 +28,9 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(organizationService.insertUserIntoOrganization
                 (employeeEmail, organizationCnpj));
     }
+
+    @GetMapping("/listById")
+    public ResponseEntity<OrganizationResponse> listOrganizationById(@RequestParam String organizationId) {
+        return ResponseEntity.status(HttpStatus.OK).body(organizationService.listOrganizationById(organizationId));
+    }
 }
