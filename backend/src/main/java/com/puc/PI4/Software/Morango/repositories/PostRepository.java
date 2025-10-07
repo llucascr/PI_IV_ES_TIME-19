@@ -13,8 +13,8 @@ public interface PostRepository extends MongoRepository<Post, String> {
     @Query("{'userId': ?0}")
     Page<Post> findByUserId(String userId,  Pageable pageable);
 
-    @Query("{ $or: [ { 'titulo': { $regex: ?0, $options: 'i' } }, { 'descricao': { $regex: ?0, $options: 'i' } } ] }")
-    Optional<Post> findByTituloOrDescricaoRegex(String termo);
+    @Query("{ $or: [ { 'title': { $regex: ?0, $options: 'i' } }, { 'description': { $regex: ?0, $options: 'i' } } ] }")
+    Page<Post> searchByTitleOrDescriptionRegex(String query, Pageable pageable);
 
     @Query("{ '_id': ?1, 'userId': ?0 }")
     Optional<Post> findByUserAndPostId(String userId, String postId);

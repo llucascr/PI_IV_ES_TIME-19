@@ -29,7 +29,7 @@ public class PostController {
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int numberOfPosts
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(postService.listAllPostsByUser(page, numberOfPosts, userId).getContent());
+        return ResponseEntity.status(HttpStatus.OK).body(postService.listAllPostsByUser(page, numberOfPosts, userId).getContent());
     }
 
     @GetMapping("/list")
@@ -48,5 +48,13 @@ public class PostController {
     @DeleteMapping("/delete")
     public ResponseEntity<PostResponse> deletePost(@RequestParam String postId, @RequestParam String userId) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId, userId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponse>> searchPosts(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfPosts){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.searchPosts(query, page, numberOfPosts).getContent());
     }
 }
