@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface PostRepository extends MongoRepository<Post, String> {
 
-    @Query("{'userId': ?0}")
+    @Query(value = "{ 'userId': ?0 }", sort = "{ 'createAt': -1 }")
     Page<Post> findByUserId(String userId,  Pageable pageable);
 
-    @Query("{ $or: [ { 'title': { $regex: ?0, $options: 'i' } }, { 'description': { $regex: ?0, $options: 'i' } } ] }")
+    @Query(value = "{ $or: [ { 'title': { $regex: ?0, $options: 'i' } }, { 'description': { $regex: ?0, $options: 'i' } } ] }", sort = "{'createAt':  -1}")
     Page<Post> searchByTitleOrDescriptionRegex(String query, Pageable pageable);
 
     @Query("{ '_id': ?1, 'userId': ?0 }")

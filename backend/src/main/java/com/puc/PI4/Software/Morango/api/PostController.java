@@ -23,6 +23,16 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(postRequest));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<PostResponse> updatePost(@RequestParam String postId, @RequestBody PostRequest postRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(postId, postRequest));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<PostResponse> deletePost(@RequestParam String postId, @RequestParam String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId, userId));
+    }
+
     @GetMapping("/listByUser")
     public ResponseEntity<List<PostResponse>> listAllPostsByUser(
             @RequestParam String userId,
@@ -38,16 +48,6 @@ public class PostController {
             @RequestParam(defaultValue = "10", required = false) int numberOfPosts
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.listAllPosts(page, numberOfPosts).getContent());
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<PostResponse> updatePost(@RequestParam String postId, @RequestBody PostRequest postRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.updatePost(postId, postRequest));
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<PostResponse> deletePost(@RequestParam String postId, @RequestParam String userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId, userId));
     }
 
     @GetMapping("/search")

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class PostExceptionHandler {
-    @ExceptionHandler(UserAlreadyExist.class)
+    @ExceptionHandler(PostNotFound.class)
     public ProblemDetail postNotFound(PostNotFound e) {
         ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
         problem.setTitle(e.getCode());
