@@ -1,13 +1,13 @@
-package com.puc.PI4.Software.Morango.exceptions.post;
+package com.puc.PI4.Software.Morango.exceptions.prague;
 
 import com.puc.PI4.Software.Morango.exceptions.ApiExceptionInterface;
 import org.springframework.http.HttpStatus;
 
-public class PostNotFound extends RuntimeException implements ApiExceptionInterface {
-    private final String code = "POST_NOT_FOUND";
+public class PragueAlreadyExists extends RuntimeException implements ApiExceptionInterface {
+    private final String code = "PRAGUE_ALREADY_EXISTS";
     private String message;
 
-    public PostNotFound(String message) {
+    public PragueAlreadyExists(String message) {
         this.message = message;
     }
 
@@ -22,6 +22,6 @@ public class PostNotFound extends RuntimeException implements ApiExceptionInterf
 
     @Override
     public HttpStatus getHttpStatus() {
-        return HttpStatus.NOT_FOUND;
+        return HttpStatus.CONFLICT;
     }
 }

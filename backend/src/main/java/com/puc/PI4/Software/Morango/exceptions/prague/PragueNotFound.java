@@ -1,13 +1,14 @@
-package com.puc.PI4.Software.Morango.exceptions.post;
+package com.puc.PI4.Software.Morango.exceptions.prague;
 
 import com.puc.PI4.Software.Morango.exceptions.ApiExceptionInterface;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 
-public class PostNotFound extends RuntimeException implements ApiExceptionInterface {
-    private final String code = "POST_NOT_FOUND";
+public class PragueNotFound extends RuntimeException implements ApiExceptionInterface {
+    private final String code = "PRAGUE_NOT_FOUND";
     private String message;
 
-    public PostNotFound(String message) {
+    public PragueNotFound(String message) {
         this.message = message;
     }
 
