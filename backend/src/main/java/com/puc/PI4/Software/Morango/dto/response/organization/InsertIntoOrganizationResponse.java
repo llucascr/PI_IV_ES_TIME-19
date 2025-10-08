@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmployeesOrganizationResponse {
+public class InsertIntoOrganizationResponse {
     private String nameOrganization;
     private List<UserResponse> employees;
 }
