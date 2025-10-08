@@ -46,4 +46,10 @@ public class OrganizationController {
                 .listAllOrganizations(page, numberOfOrganizations).getContent());
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<OrganizationResponse> updateOrganization(@RequestParam String organizationId,
+                                                                   @RequestBody OrganizationRequest organizationRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(organizationService.updateOrganization(organizationId, organizationRequest));
+    }
+
 }

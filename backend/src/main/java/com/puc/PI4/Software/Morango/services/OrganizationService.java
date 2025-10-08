@@ -1,5 +1,6 @@
 package com.puc.PI4.Software.Morango.services;
 
+import ch.qos.logback.core.util.StringUtil;
 import com.puc.PI4.Software.Morango.dto.request.organization.OrganizationRequest;
 import com.puc.PI4.Software.Morango.dto.response.organization.InsertIntoOrganizationResponse;
 import com.puc.PI4.Software.Morango.dto.response.organization.ListAllOrganizationResponse;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,6 +83,26 @@ public class OrganizationService {
                 .toList();
 
         return new PageImpl<>(organizationResponses, pageable, organizations.getTotalElements());
+    }
+
+    public OrganizationResponse updateOrganization(String organizationId, OrganizationRequest organizationRequest) {
+        Organization organization = organizationRepository.findById(organizationId).orElseThrow(
+                () -> new OrganizationNotFound("Organization with id " + organizationId + " not found"));
+
+        Organization organizationUpdated = Organization.builder()
+                .id(organization.getId())
+                .cnpj(organizationRequest.getCnpj() != null ? organizationRequest.getCnpj() : organization.getCnpj())
+                .name(organizationRequest.getName() != null ? organizationRequest.getName() : organization.getName())
+                .email(organizationRequest.getEmail() != null ? organizationRequest.getEmail() : organization.getEmail())
+                .address(organizationRequest.getAddress() != null ? organizationRequest.getAddress() : organization.getAddress())
+                .phone(organizationRequest.getPhone() != null ? organizationRequest.getPhone() : organization.getPhone())
+                .employees(organization.getEmployees())
+                .createdAt(organization.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .active(organization.getActive())
+                .build();
+
+        return modelMapper.map(organizationRepository.save(organizationUpdated), OrganizationResponse.class);
     }
 
 }
