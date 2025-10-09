@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PragueResponse {
+    private String _id;
     private String id;
     private String comumName;
     private String cientificName;
