@@ -22,4 +22,12 @@ public class PragueExceptionHandler {
         problem.setDetail(e.getMessage());
         return problem;
     }
+
+    @ExceptionHandler(PragueInvalidFormat.class)
+    public ProblemDetail pragueInvalidFormat(PragueInvalidFormat e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
 }
