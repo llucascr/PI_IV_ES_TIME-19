@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,10 +33,11 @@ public class PostService {
     private final UserRepository userRepository;
 
     public PostResponse createPost(PostRequest postRequest) {
-        User user = userRepository.findById(postRequest.getUserId()).orElseThrow(
+        userRepository.findById(postRequest.getUserId()).orElseThrow(
                 () -> new UserNotFound("User not found"));
 
         Post post = Post.builder()
+                .id(UUID.randomUUID().toString())
                 .title(postRequest.getTitle())
                 .description(postRequest.getDescription())
                 .text(postRequest.getText())
