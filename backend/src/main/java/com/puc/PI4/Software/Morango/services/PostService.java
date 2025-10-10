@@ -103,55 +103,31 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, numberOfPosts);
         Page<Post> posts = postRepository.findAll(pageable);
 
-        List<PostResponse> postResponses = posts.getContent().stream()
-                .map(post -> PostResponse.builder()
-                        .postOwner(userRepository.findById(post.getUserId()).map(User::getName).orElse("Usuário Desconhecido"))
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .description(post.getDescription())
-                        .text(post.getText())
-                        .createAt(post.getCreateAt())
-                        .updateAt(post.getUpdateAt())
-                        .build())
-                .toList();
-        return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
+        return new PageImpl<>(modelMapperPostResponse(posts), pageable, posts.getTotalElements());
     }
 
     public Page<PostResponse> listAllPostsByUser(int page, int numberOfPosts, String userId) {
         Pageable pageable = PageRequest.of(page, numberOfPosts);
         Page<Post> posts = postRepository.findByUserId(userId, pageable);
 
-        List<PostResponse> postResponses = posts.getContent().stream()
-                .map(post -> PostResponse.builder()
-                        .postOwner(userRepository.findById(post.getUserId()).map(User::getName).orElse("Usuário Desconhecido"))
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .description(post.getDescription())
-                        .text(post.getText())
-                        .createAt(post.getCreateAt())
-                        .updateAt(post.getUpdateAt())
-                        .build())
-                .toList();
-        return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
-
+        return new PageImpl<>(modelMapperPostResponse(posts), pageable, posts.getTotalElements());
     }
 
     public Page<PostResponse> searchPosts(String query, int page, int numberOfPosts) {
         Pageable pageable = PageRequest.of(page, numberOfPosts);
         Page<Post> posts = postRepository.searchByTitleOrDescriptionRegex(query, pageable);
 
-        List<PostResponse> postResponses = posts.getContent().stream()
-                .map(post -> PostResponse.builder()
-                        .postOwner(userRepository.findById(post.getUserId()).map(User::getName).orElse("Usuário Desconhecido"))
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .description(post.getDescription())
-                        .text(post.getText())
-                        .createAt(post.getCreateAt())
-                        .updateAt(post.getUpdateAt())
-                        .build())
+        return new PageImpl<>(modelMapperPostResponse(posts), pageable, posts.getTotalElements());
+    }
+
+    private List<PostResponse> modelMapperPostResponse(Page<Post> posts) {
+        return posts.getContent().stream()
+                .map(p -> {
+                    PostResponse response = modelMapper.map(p, PostResponse.class);
+                    response.setPostOwner(userRepository.findById(p.getUserId()).map(User::getName).orElse("Usuário Desconhecido"));
+                    return response;
+                })
                 .toList();
-        return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
     }
 
 }
