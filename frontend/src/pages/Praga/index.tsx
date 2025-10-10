@@ -3,6 +3,7 @@ import { config } from "config";
 import { useUI } from "context";
 import { useFetch } from "hooks";
 import { useState } from "react";
+import { apiFetch } from "utils";
 
 type Praga = {
   _id: React.Key;
@@ -16,7 +17,7 @@ export const Praga = () => {
 
   const [search, setSearch] = useState<string>("");
 
-  const { data, error, loaded } = useFetch<{ data: Praga[] }>({
+  const { data, error, loaded, refetch } = useFetch<{ data: Praga[] }>({
     url: config.apiUrl + "/prague/list",
     options: {
       method: "GET",
@@ -65,7 +66,7 @@ export const Praga = () => {
                     onClick: () => {
                       ui.show({
                         id: "cadastrar-praga",
-                        content: <FormCadastroPraga />,
+                        content: <FormCadastroPraga refetch={refetch} />,
                         type: "modal",
                         options: {
                           titulo: "Cadastrar Praga",
@@ -92,23 +93,54 @@ export const Praga = () => {
   );
 };
 
-const FormCadastroPraga = () => {
+const FormCadastroPraga = ({ refetch }: { refetch: () => void }) => {
+  const ui = useUI();
   const [nomeComum, setNomeComum] = useState<string>("");
   const [nomeCientifico, setNomeCientifico] = useState<string>("");
 
+  async function onSave(e: any) {
+    e.preventDefault();
+
+    const { data } = await apiFetch({
+      url: config.apiUrl + "/prague/create",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          comumName: nomeComum,
+          cientificName: nomeCientifico,
+        },
+      },
+    });
+
+    console.log(data);
+    ui.hide("modal", "cadastrar-praga");
+    refetch();
+  }
+
   return (
-    <form action="">
+    <form action="" className="flex flex-col gap-4">
       <input
         type="text"
         value={nomeComum}
         onChange={(e) => setNomeComum(e.target.value)}
+        placeholder="Nome Comum"
+        required
       />
 
       <input
         type="text"
         value={nomeCientifico}
         onChange={(e) => setNomeCientifico(e.target.value)}
+        placeholder="Nome Científico"
+        required
       />
+
+      <button type="submit" onClick={onSave}>
+        Salvar
+      </button>
     </form>
   );
 };
