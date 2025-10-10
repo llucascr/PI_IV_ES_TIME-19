@@ -2,6 +2,7 @@ package com.puc.PI4.Software.Morango.models;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,9 @@ import java.time.LocalDateTime;
 public class Post {
 
     @Id
+    private String _id;
+
+    @Indexed(unique = true)
     private String id;
 
     private String title;

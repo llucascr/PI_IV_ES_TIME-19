@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +37,7 @@ public class UserService {
         }
 
         User user = User.builder()
+                .id(UUID.randomUUID().toString())
                 .name(userRequest.getName())
                 .email(userRequest.getEmail())
                 .password(userRequest.getPassword())
@@ -46,6 +48,8 @@ public class UserService {
 
         return modelMapper.map(userRepository.save(user), UserResponse.class);
     }
+
+    // TODO: Login User
 
     public UserResponse listUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -69,6 +73,7 @@ public class UserService {
                 () -> new UserNotFound("User with email " + userRequest.getEmail() + " not found"));
 
         User userUpdated = User.builder()
+                ._id(user.get_id())
                 .id(user.getId())
                 .name(userRequest.getName() != null ? userRequest.getName() : user.getName())
                 .email(userRequest.getEmail() != null ? userRequest.getEmail() : user.getEmail())
