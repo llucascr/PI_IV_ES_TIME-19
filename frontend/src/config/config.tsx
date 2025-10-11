@@ -10,4 +10,12 @@ export const config: ConfigType = {
   tokenCookieNome: import.meta.env.VITE_TOKEN_COOKIE_NAME,
 
   logo: "URL/SRC",
+
+  UIContext: "modal",
+  UIOptions: {
+    position: "right",
+    size: "medium",
+    titulo: "Modal Padrão",
+    widthFraction: "1/3",
+  },
 };
