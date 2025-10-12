@@ -1,6 +1,7 @@
 package com.puc.PI4.Software.Morango.api;
 
 import com.puc.PI4.Software.Morango.dto.request.user.UserRequest;
+import com.puc.PI4.Software.Morango.dto.response.organization.UserAndOrganizationResponse;
 import com.puc.PI4.Software.Morango.dto.response.user.UserResponse;
 import com.puc.PI4.Software.Morango.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,11 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@RequestParam String userId, @RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userId, userRequest));
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<UserAndOrganizationResponse> loginUser(String email, String password, String cnpj) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.loginUser(email, password, cnpj));
     }
 
 }

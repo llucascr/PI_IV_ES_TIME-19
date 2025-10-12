@@ -24,4 +24,20 @@ public class UserExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(IncorrectUserPassword.class)
+    public ProblemDetail handlerIncorrectUserPassword(IncorrectUserPassword e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
+    @ExceptionHandler(UserNotInOrganization.class)
+    public ProblemDetail hadnlerUserNotInOrganization(UserNotInOrganization e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
