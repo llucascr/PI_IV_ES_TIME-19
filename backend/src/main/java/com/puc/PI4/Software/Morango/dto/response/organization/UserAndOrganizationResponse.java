@@ -1,5 +1,6 @@
 package com.puc.PI4.Software.Morango.dto.response.organization;
 
+import com.puc.PI4.Software.Morango.dto.response.user.UserResponse;
 import com.puc.PI4.Software.Morango.models.User;
 import lombok.*;
 
@@ -19,5 +20,5 @@ public class UserAndOrganizationResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean active;
-    private User user;
+    private UserResponse user;
 }

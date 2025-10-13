@@ -12,11 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-    private String _id;
     private String id;
     private String name;
     private String email;
-    private String password;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private Boolean active;

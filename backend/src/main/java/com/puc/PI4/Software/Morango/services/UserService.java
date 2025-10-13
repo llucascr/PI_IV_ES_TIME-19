@@ -70,7 +70,7 @@ public class UserService {
         if (!isEmployye) throw new UserNotInOrganization("User is not an employee of this organization");
 
         UserAndOrganizationResponse model = modelMapper.map(organization, UserAndOrganizationResponse.class);
-        model.setUser(user);
+        model.setUser(modelMapper.map(user, UserResponse.class));
         return model;
     }
 
