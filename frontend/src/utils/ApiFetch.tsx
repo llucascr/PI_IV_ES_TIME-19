@@ -1,14 +1,14 @@
 import { config } from "config";
 import { useCookie } from "hooks";
-import type { FetchResponse, ParamsUseFetch } from "types";
+import type { FetchErrorResponse, FetchResponse, ParamsUseFetch } from "types";
 
 /**
  * Função utilitária para chamadas imperativas de API.
  */
-export async function apiFetch<T>({
-  url,
-  options,
-}: ParamsUseFetch): Promise<{ data: FetchResponse<T> }> {
+export async function apiFetch<T>({ url, options }: ParamsUseFetch): Promise<{
+  data: FetchResponse<T>;
+  error: FetchErrorResponse;
+}> {
   const { getCookie } = useCookie();
 
   /**
@@ -35,20 +35,24 @@ export async function apiFetch<T>({
 
   const fullUrl: string = buildQueryParams(url, options.params);
 
-  const response = await fetch(fullUrl, {
-    method: options.method,
-    body: options.data ? JSON.stringify(options.data) : options.formData,
-    headers: {
-      // "Content-Type": "application/json",
-      Authorization: `Bearer ${getCookie(config.tokenCookieNome)}`,
-      ...options.headers,
-    },
-  });
+  let result;
+  let error;
 
-  if (!response.ok) {
-    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+  try {
+    const response = await fetch(fullUrl, {
+      method: options.method,
+      body: options.data ? JSON.stringify(options.data) : options.formData,
+      headers: {
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie(config.tokenCookieNome)}`,
+        ...options.headers,
+      },
+    });
+
+    result = await response.json();
+  } catch (err: any) {
+    error = err.body;
   }
 
-  const result = await response.json();
-  return { data: result };
+  return { data: result, error: error };
 }
