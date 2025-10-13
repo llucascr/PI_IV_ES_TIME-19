@@ -37,7 +37,7 @@ public class UserService {
     private final OrganizationRepository organizationRepository;
 
     public UserResponse createUser(UserRequest userRequest) {
-
+        // TODO: Somente ADMIN pode criar um usuario
         if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
             throw new UserAlreadyExist("User with email " + userRequest.getEmail() + " already exist");
         }
@@ -56,7 +56,7 @@ public class UserService {
     }
 
     public UserAndOrganizationResponse loginUser(String email, String password, String cnpj) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+        User user = userRepository.findByEmail(email).orElseThrow( // TODO: Verificar se esse usuario esta ativo
                 () -> new UserNotFound("User with email " + email + " not found"));
 
         if (!user.getPassword().equals(password)) throw new IncorrectUserPassword("Password Incorrect");

@@ -29,5 +29,5 @@ public class Post {
 
     private String userId;
 
-    //TODO: idMonitoramento
+   private String organizationId;
 }
