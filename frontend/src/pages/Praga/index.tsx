@@ -101,7 +101,7 @@ const FormCadastroPraga = ({ refetch }: { refetch: () => void }) => {
   async function onSave(e: any) {
     e.preventDefault();
 
-    const { data } = await apiFetch({
+    const { data, error } = await apiFetch({
       url: config.apiUrl + "/prague/create",
       options: {
         method: "POST",
@@ -115,9 +115,14 @@ const FormCadastroPraga = ({ refetch }: { refetch: () => void }) => {
       },
     });
 
-    console.log(data);
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(data);
+      refetch();
+    }
+
     ui.hide("modal", "cadastrar-praga");
-    refetch();
   }
 
   return (
