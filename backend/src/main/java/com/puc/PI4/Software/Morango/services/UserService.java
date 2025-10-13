@@ -6,10 +6,7 @@ import com.puc.PI4.Software.Morango.dto.response.organization.OrganizationRespon
 import com.puc.PI4.Software.Morango.dto.response.organization.UserAndOrganizationResponse;
 import com.puc.PI4.Software.Morango.dto.response.user.UserResponse;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
-import com.puc.PI4.Software.Morango.exceptions.user.IncorrectUserPassword;
-import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
-import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
-import com.puc.PI4.Software.Morango.exceptions.user.UserNotInOrganization;
+import com.puc.PI4.Software.Morango.exceptions.user.*;
 import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
@@ -25,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -37,10 +35,18 @@ public class UserService {
     private final OrganizationRepository organizationRepository;
 
     public UserResponse createUser(UserRequest userRequest) {
-        // TODO: Somente ADMIN pode criar um usuario
-        if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new UserAlreadyExist("User with email " + userRequest.getEmail() + " already exist");
+
+        User userAdmin = userRepository.findById(userRequest.getIdAdminUser()).orElseThrow(
+                () -> new UserWithoutAdminPermission("User does not have permission 2222"));
+        
+        if (!userAdmin.getRole().equals(RoleUser.ADMIN)) {
+            throw new UserWithoutAdminPermission("User does not have permission");
         }
+
+        userRepository.findByEmail(userRequest.getEmail())
+                .ifPresent(u -> {
+                    throw new UserAlreadyExist("User with email " + userRequest.getEmail() + " already exist");
+                });
 
         User user = User.builder()
                 .id(UUID.randomUUID().toString())

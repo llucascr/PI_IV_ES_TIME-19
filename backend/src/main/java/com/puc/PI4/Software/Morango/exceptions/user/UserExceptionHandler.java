@@ -40,4 +40,12 @@ public class UserExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(UserWithoutAdminPermission.class)
+    public ProblemDetail hadlerUserWithoutAdminPermission(UserWithoutAdminPermission e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
