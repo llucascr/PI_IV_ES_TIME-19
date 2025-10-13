@@ -38,7 +38,7 @@ public class UserService {
 
         User userAdmin = userRepository.findById(userRequest.getIdAdminUser()).orElseThrow(
                 () -> new UserWithoutAdminPermission("User does not have permission 2222"));
-        
+
         if (!userAdmin.getRole().equals(RoleUser.ADMIN)) {
             throw new UserWithoutAdminPermission("User does not have permission");
         }
@@ -62,8 +62,12 @@ public class UserService {
     }
 
     public UserAndOrganizationResponse loginUser(String email, String password, String cnpj) {
-        User user = userRepository.findByEmail(email).orElseThrow( // TODO: Verificar se esse usuario esta ativo
+        User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new UserNotFound("User with email " + email + " not found"));
+
+        if (user.getActive() == false) {
+            throw new UserIsNotActive("User with " + email + " is not active");
+        }
 
         if (!user.getPassword().equals(password)) throw new IncorrectUserPassword("Password Incorrect");
 

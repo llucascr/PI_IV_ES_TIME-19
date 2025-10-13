@@ -48,4 +48,12 @@ public class UserExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(UserIsNotActive.class)
+    public ProblemDetail handlerUserIsNotActive(UserIsNotActive e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
