@@ -19,6 +19,8 @@ import java.util.List;
 public class Organization {
 
     @Id
+    private String _id;
+
     private String id;
 
     private String cnpj;
