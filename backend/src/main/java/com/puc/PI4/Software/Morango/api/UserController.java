@@ -18,11 +18,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/create")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequest));
-    }
-
     @GetMapping("/listById")
     public ResponseEntity<UserResponse> listUserById(@RequestParam String userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.listUserById(userId));
@@ -39,11 +34,6 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@RequestParam String userId, @RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userId, userRequest));
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<UserAndOrganizationResponse> loginUser(String email, String password, String cnpj) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.loginUser(email, password, cnpj));
     }
 
 }
