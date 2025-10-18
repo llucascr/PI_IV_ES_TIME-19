@@ -6,6 +6,7 @@ import com.puc.PI4.Software.Morango.dto.response.organization.InsertIntoOrganiza
 import com.puc.PI4.Software.Morango.dto.response.organization.ListAllOrganizationResponse;
 import com.puc.PI4.Software.Morango.dto.response.organization.OrganizationResponse;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationAlreadyExist;
+import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotActive;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
 import com.puc.PI4.Software.Morango.models.Organization;
@@ -23,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +41,7 @@ public class OrganizationService {
         }
 
         Organization organization = Organization.builder()
+                .id(UUID.randomUUID().toString())
                 .cnpj(organizationRequest.getCnpj())
                 .name(organizationRequest.getName())
                 .email(organizationRequest.getEmail())
@@ -53,11 +56,15 @@ public class OrganizationService {
 
     public InsertIntoOrganizationResponse insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {
 
-        User user = userRepository.findByEmail(employeeEmail).orElseThrow(
+        User user = userRepository.OpFindByEmail(employeeEmail).orElseThrow(
                 () -> new UserNotFound("User with email " + employeeEmail + " not found"));
 
         Organization organization = organizationRepository.findByCnpj(organizationCnpj).orElseThrow(
                 () ->  new OrganizationNotFound("Organization with cnpj " + organizationCnpj + " not found"));
+
+        if (organization.getActive() == false) {
+            throw new OrganizationIsNotActive("Organization with CNPJ " + organizationCnpj + " is not active");
+        }
 
         user.setIdOrganization(organization.getId());
         organization.setEmployees(user);

@@ -23,4 +23,12 @@ public class OrganizationExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(OrganizationIsNotActive.class)
+    public ProblemDetail organizationIsNotActive(OrganizationIsNotActive e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
