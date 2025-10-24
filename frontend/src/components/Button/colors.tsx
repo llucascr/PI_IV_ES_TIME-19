@@ -79,4 +79,24 @@ export const COLORS = {
       border: "border-transparent",
     },
   },
+  pink: {
+    solid: {
+      bg: "bg-[#ffc6c6]",
+      hover: "hover:bg-pink-600 hover:text-white",
+      text: "text-black",
+      border: "",
+    },
+    outline: {
+      bg: "bg-transparent",
+      hover: "hover:bg-pink-500 hover:text-white",
+      text: "text-pink-600",
+      border: "border-pink-500",
+    },
+    ghost: {
+      bg: "bg-transparent",
+      hover: "hover:bg-pink-500 hover:text-white",
+      text: "text-pink-600",
+      border: "border-transparent",
+    },
+  },
 };
