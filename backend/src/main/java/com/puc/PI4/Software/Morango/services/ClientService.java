@@ -10,9 +10,14 @@ import com.puc.PI4.Software.Morango.repositories.ClientRepository;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -45,6 +50,21 @@ public class ClientService {
                 .build();
 
         return modelMapper.map(clientRepository.save(client), ClientResponse.class);
+    }
+
+    public Page<ClientResponse> listAllClietsByOrganization(String idOrgazanition, int page, int size) {
+
+        organizationRepository.findById(idOrgazanition).orElseThrow(
+                () -> new OrganizationNotFound("Organization with id " + idOrgazanition + " not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Client> clients = clientRepository.findClientByIdOrganization(idOrgazanition, pageable);
+
+        List<ClientResponse> clientResponses = clients.stream()
+                .map(client -> modelMapper.map(client, ClientResponse.class))
+                .toList();
+
+        return new PageImpl<>(clientResponses, pageable, clients.getTotalElements());
     }
 
 }

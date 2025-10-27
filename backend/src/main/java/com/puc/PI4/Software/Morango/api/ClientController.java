@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/client")
@@ -19,6 +21,16 @@ public class ClientController {
     public ResponseEntity<ClientResponse> createClient(@RequestBody ClientRequest clientRequest,
                                                        @RequestParam String idOrganization) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientRequest, idOrganization));
+    }
+
+    @GetMapping("/listByOrg")
+    public ResponseEntity<List<ClientResponse>> listAllClientsByOrganization(
+            @RequestParam String idOrganization,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.listAllClietsByOrganization(
+                idOrganization, page, size).getContent());
     }
 
 }
