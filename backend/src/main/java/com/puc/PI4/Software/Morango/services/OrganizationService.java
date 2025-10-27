@@ -97,6 +97,7 @@ public class OrganizationService {
                 () -> new OrganizationNotFound("Organization with id " + organizationId + " not found"));
 
         Organization organizationUpdated = Organization.builder()
+                ._id(organization.get_id())
                 .id(organization.getId())
                 .cnpj(organizationRequest.getCnpj() != null ? organizationRequest.getCnpj() : organization.getCnpj())
                 .name(organizationRequest.getName() != null ? organizationRequest.getName() : organization.getName())
