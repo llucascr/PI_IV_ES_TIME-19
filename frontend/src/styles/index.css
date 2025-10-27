@@ -41,5 +41,9 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
+}
+
+::-webkit-scrollbar {
+  width: 8px;
 }
