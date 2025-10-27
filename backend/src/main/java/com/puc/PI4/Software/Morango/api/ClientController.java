@@ -48,4 +48,15 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(idClient, request, idOrganization));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ClientResponse>> searchClientByName(
+            @RequestParam String nameClient,
+            @RequestParam String idOrganization,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.searchClientByName(
+                nameClient, idOrganization, page, size).getContent());
+    }
+
 }

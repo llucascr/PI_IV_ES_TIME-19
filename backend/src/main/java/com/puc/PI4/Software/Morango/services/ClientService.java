@@ -102,4 +102,18 @@ public class ClientService {
         return modelMapper.map(clientRepository.save(client), ClientResponse.class);
     }
 
+    public Page<ClientResponse> searchClientByName(String nameClient, String idOrganizacao, int page, int size) {
+
+        organizationRepository.findById(idOrganizacao)
+                .orElseThrow(() ->  new OrganizationNotFound("Organization with id " + idOrganizacao + " not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Client> clients = clientRepository.searchClientByName(idOrganizacao, nameClient, pageable);
+
+        List<ClientResponse> clientResponses = clients.stream()
+                .map(client -> modelMapper.map(client, ClientResponse.class))
+                .toList();
+        return new PageImpl<>(clientResponses, pageable, clients.getTotalElements());
+    }
+
 }

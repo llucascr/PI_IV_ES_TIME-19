@@ -25,4 +25,7 @@ public interface ClientRepository extends MongoRepository<Client, String> {
     @Query("{idOrganizacao: ?0, active: ?1}")
     Page<Client> findClientByIdOrganization(String idOrganization, Boolean active ,Pageable pageable);
 
+    @Query("{idOrganizacao: ?0, name: {$regex: ?1, $options: 'i'}}")
+    Page<Client> searchClientByName(String idOrganization, String nameClient, Pageable pageable);
+
 }
