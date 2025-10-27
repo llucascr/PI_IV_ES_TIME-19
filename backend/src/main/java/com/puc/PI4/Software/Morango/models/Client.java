@@ -25,6 +25,7 @@ public class Client {
     private String email;
     private String adress;
     private String phoneNumber;
+    private Boolean active;
     private LocalDateTime creatAt;
     private LocalDateTime updateAt;
 

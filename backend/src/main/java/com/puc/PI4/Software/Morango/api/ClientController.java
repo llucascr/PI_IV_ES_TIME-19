@@ -26,11 +26,17 @@ public class ClientController {
     @GetMapping("/listByOrg")
     public ResponseEntity<List<ClientResponse>> listAllClientsByOrganization(
             @RequestParam String idOrganization,
+            @RequestParam(defaultValue = "true", required = false) Boolean active,
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.listAllClietsByOrganization(
-                idOrganization, page, size).getContent());
+                idOrganization, active,page, size).getContent());
+    }
+
+    @PutMapping("/disable")
+    public ResponseEntity<ClientResponse> disableClient(@RequestParam String idClient) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.disableClient(idClient));
     }
 
 }

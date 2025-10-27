@@ -16,4 +16,12 @@ public class ClientExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ClientNotFound.class)
+    public ProblemDetail clientNotFound(ClientNotFound e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
