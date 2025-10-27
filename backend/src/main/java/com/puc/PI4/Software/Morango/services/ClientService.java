@@ -69,6 +69,31 @@ public class ClientService {
         return new PageImpl<>(clientResponses, pageable, clients.getTotalElements());
     }
 
+    public ClientResponse updateClient(String idClient, ClientRequest request, String idOrgazanition) {
+
+        organizationRepository.findById(idOrgazanition)
+                .orElseThrow(() ->  new OrganizationNotFound("Organization with id " + idOrgazanition + " not found"));
+
+        Client client = clientRepository.findClientByIdOrganizationAndIdClient(idOrgazanition, idClient)
+                .orElseThrow(() -> new ClientNotFound("Client with email " + request.getEmail()
+                        + " not found in organization with id " + idOrgazanition));
+
+        client = Client.builder()
+                ._id(client.get_id())
+                .id(client.getId())
+                .name(request.getName() != null ? request.getName() : client.getName())
+                .email(request.getEmail() != null ? request.getEmail() : client.getEmail())
+                .adress(request.getAdress() != null ? request.getAdress() : client.getAdress())
+                .phoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber() : client.getPhoneNumber())
+                .active(client.getActive())
+                .creatAt(client.getCreatAt())
+                .updateAt(LocalDateTime.now())
+                .idOrganizacao(client.getIdOrganizacao())
+                .build();
+
+        return  modelMapper.map(clientRepository.save(client), ClientResponse.class);
+    }
+
     public ClientResponse disableClient(String idClient) {
         Client client = clientRepository.findById(idClient).orElseThrow(
                 () -> new ClientNotFound("Client with id " + idClient + " not found"));

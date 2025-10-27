@@ -39,4 +39,13 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.disableClient(idClient));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<ClientResponse> updateClient(
+            @RequestParam String idClient,
+            @RequestBody ClientRequest request,
+            @RequestParam String idOrganization
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(idClient, request, idOrganization));
+    }
+
 }
