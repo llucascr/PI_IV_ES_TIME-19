@@ -65,7 +65,7 @@ export const FormPraga = ({
         title="Nome Científico"
         field="nomeCientifico"
         id="nomeCientifico"
-        required
+        required={action === "create"}
         placeholder="Nome Científico"
         type="text"
         value={nomeCientifico}
