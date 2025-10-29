@@ -1,3 +1,3 @@
 export const ErrorPage = () => {
-  return <>Error Page</>;
+  return <>It's over betinha</>;
 };

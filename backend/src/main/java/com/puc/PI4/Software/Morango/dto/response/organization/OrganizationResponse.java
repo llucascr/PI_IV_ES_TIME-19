@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrganizationResponse {
+    private String id;
     private String cnpj;
     private String name;
     private String email;

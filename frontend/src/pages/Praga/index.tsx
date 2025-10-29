@@ -67,9 +67,10 @@ export const Praga = () => {
                       ui.show({
                         id: "cadastrar-praga",
                         content: <FormCadastroPraga refetch={refetch} />,
-                        type: "modal",
+                        type: "sidebar",
                         options: {
                           titulo: "Cadastrar Praga",
+                          position: "right"
                         },
                       });
                     },

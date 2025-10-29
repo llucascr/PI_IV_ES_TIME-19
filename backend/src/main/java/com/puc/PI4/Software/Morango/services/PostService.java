@@ -7,6 +7,7 @@ import com.puc.PI4.Software.Morango.exceptions.post.PostNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
 import com.puc.PI4.Software.Morango.models.Post;
 import com.puc.PI4.Software.Morango.models.User;
+import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.PostRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     public PostResponse createPost(PostRequest postRequest) {
-        userRepository.findById(postRequest.getUserId()).orElseThrow(
+        User user = userRepository.findById(postRequest.getUserId()).orElseThrow(
                 () -> new UserNotFound("User not found"));
 
         Post post = Post.builder()
@@ -43,6 +44,7 @@ public class PostService {
                 .text(postRequest.getText())
                 .createAt(LocalDateTime.now())
                 .userId(postRequest.getUserId())
+                .organizationId(user.getIdOrganization())
                 .build();
 
         Post savedPost = postRepository.save(post);
@@ -61,6 +63,7 @@ public class PostService {
                 ()-> new PostNotFound("Post not found"));
 
         Post postUpdated = Post.builder()
+                ._id(post.get_id())
                 .id(post.getId())
                 .title(postRequest.getTitle() != null ? postRequest.getTitle() : post.getTitle())
                 .description(postRequest.getDescription() != null ? postRequest.getDescription() : post.getDescription())
