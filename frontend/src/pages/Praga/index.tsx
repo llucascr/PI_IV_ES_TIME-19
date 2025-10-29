@@ -50,6 +50,8 @@ export const Praga = () => {
 
       show!(v4(), "Deletar Praga", "error", "Praga deletada com sucesso.");
     }
+
+    setSelectedPraga(undefined);
   }
 
   const columns: Column<PragaType>[] = [
@@ -100,7 +102,10 @@ export const Praga = () => {
                               <FormPraga
                                 action="update"
                                 praga={selectedPraga}
-                                refetch={refetch}
+                                refetch={() => {
+                                  refetch();
+                                  setSelectedPraga(undefined);
+                                }}
                               />
                             ),
                             type: "modal",
