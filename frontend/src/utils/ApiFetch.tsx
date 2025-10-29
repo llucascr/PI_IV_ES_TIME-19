@@ -49,9 +49,13 @@ export async function apiFetch<T>({ url, options }: ParamsUseFetch): Promise<{
       },
     });
 
+    if (!response.ok) {
+      error = `Error: ${response.status}: ${response.statusText}`;
+    }
+
     result = await response.json();
   } catch (err: any) {
-    error = err.body;
+    error = "não foi possivel processar" in err ? err.message : String(err);
   }
 
   return { data: result, error: error };

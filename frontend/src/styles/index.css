@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --color-card: oklch(0.21 0.006 285.885);
   --color-radius: 0.65rem;
   --color-background: oklch(98.463% 0.00181 249.248);
   --color-foreground: oklch(0.141 0.005 285.823);
@@ -46,4 +47,25 @@ body {
 
 ::-webkit-scrollbar {
   width: 8px;
+}
+
+@layer utilities {
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-fadeOut {
+    animation: fadeOut 3s ease-in forwards;
+  }
 }

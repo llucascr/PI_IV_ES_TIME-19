@@ -1,4 +1,7 @@
-import { useFetch } from "hooks";
+import { Button, Input } from "components";
+import { config } from "config";
+import { useCookie, useFetch } from "hooks";
+import { useState } from "react";
 
 type Placeholder = {
   userId: React.Key;
@@ -8,6 +11,12 @@ type Placeholder = {
 };
 
 export const HomePage = () => {
+  const { setCookie, getCookie } = useCookie();
+
+  const [token, setToken] = useState<string>(
+    getCookie(config.tokenCookieNome) || ""
+  );
+
   // const [placeholder, setPlaceholder] = useState<Placeholder>();
 
   // Hook aconselhavel para buscar dados API (GET)
@@ -44,6 +53,27 @@ export const HomePage = () => {
       <button type="button" onClick={refetch}>
         Buscar Placeholder
       </button>
+
+      <form action="" className="flex flex-col gap-3">
+        <Input
+          placeholder="Token"
+          field="token"
+          title="Digite o token"
+          type="text"
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
+        />
+
+        <Button
+          color="green"
+          title="Adicionar Token"
+          type="submit"
+          onClick={() => {
+            setCookie(config.tokenCookieNome, token, 5);
+          }}
+          disable={!token}
+        />
+      </form>
 
       {/* <div className="flex gap-4">
         <button type="button" onClick={getPlaceholder}>
