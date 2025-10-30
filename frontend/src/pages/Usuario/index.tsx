@@ -1,68 +1,49 @@
-import { Button, DataTable, type Column } from "components";
+import { Button, DataTable, StatusPulseDot, type Column } from "components";
 import { config } from "config";
-import { useNotification, useUI } from "context";
+import { useUI } from "context";
 import { useFetch } from "hooks";
 import { useState } from "react";
-import { FormPraga } from "./form";
-import { NotePencilIcon, TrashIcon } from "@phosphor-icons/react";
-import type { PragaType } from "types";
-import { apiFetch } from "utils";
-import { v4 } from "uuid";
+import { NotePencilIcon } from "@phosphor-icons/react";
+import type { OrganizacaoByIdType, UsuarioType } from "types";
+import { FormUsuario } from "./form";
 
-export const Praga = () => {
+export const Usuario = () => {
   const ui = useUI();
-  const { show } = useNotification();
-
   const [search, setSearch] = useState<string>("");
-  const [selectedPraga, setSelectedPraga] = useState<PragaType>();
+  const [selectedUsuario, setSelectedUsuario] = useState<UsuarioType>();
 
-  const { data, error, loaded, refetch } = useFetch<{ data: PragaType[] }>({
-    url: config.apiUrl + "/prague/list",
+  const { data, error, loaded, refetch } = useFetch<{
+    data: OrganizacaoByIdType;
+  }>({
+    url: config.apiUrl + "/organization/listById",
     options: {
       method: "GET",
       params: {
-        page: 0,
-        numberOfPragues: 100,
+        organizationId: "35332d7d-7015-4edb-8a3e-9add87fdfae9",
       },
     },
   });
 
-  async function deletarPraga(id: React.Key) {
-    const { error } = await apiFetch({
-      url: config.apiUrl + "/prague/delete",
-      options: {
-        method: "DELETE",
-        params: {
-          pragueId: id,
-        },
-      },
-    });
-
-    if (error) {
-      show!(
-        v4(),
-        "Deletar Praga",
-        "error",
-        "Não foi possível deletar a praga."
-      );
-    } else {
-      refetch();
-
-      show!(v4(), "Deletar Praga", "error", "Praga deletada com sucesso.");
-    }
-
-    setSelectedPraga(undefined);
-  }
-
-  const columns: Column<PragaType>[] = [
+  const columns: Column<UsuarioType>[] = [
     {
-      field: "comumName",
-      header: "Nome Comum",
+      field: "active",
+      header: "Status",
+      sortable: true,
+      body: (rowData) =>
+        rowData.active ? (
+          <StatusPulseDot status="ativo" />
+        ) : (
+          <StatusPulseDot status="inativo" />
+        ),
+    },
+    {
+      field: "name",
+      header: "Nome",
       sortable: true,
     },
     {
-      field: "cientificName",
-      header: "Nome Científico",
+      field: "email",
+      header: "Email",
       sortable: false,
     },
     {
@@ -78,32 +59,21 @@ export const Praga = () => {
             type="button"
             onClick={() =>
               ui.show({
-                id: "update-praga",
+                id: "update-usuario",
                 content: (
-                  <FormPraga
+                  <FormUsuario
                     action="update"
-                    praga={rowData}
-                    refetch={() => {
-                      refetch();
-                      setSelectedPraga(undefined);
-                    }}
+                    usuario={rowData}
+                    refetch={refetch}
                   />
                 ),
                 type: "modal",
                 options: {
-                  titulo: "Editar Praga",
+                  titulo: "Editar Usuário",
                   position: "right",
                 },
               })
             }
-          />
-          <Button
-            color="red"
-            title=""
-            icon={<TrashIcon />}
-            positionIcon="left"
-            type="button"
-            onClick={() => deletarPraga(rowData.id)}
           />
         </div>
       ),
@@ -114,7 +84,7 @@ export const Praga = () => {
     <div className="flex flex-col gap-4">
       <div className="m-8">
         <h1 className="text-3xl font-bold tracking-tight text-foreground text-balance">
-          Listagem de Pragas
+          Listagem de Usuários
         </h1>
       </div>
       {error && <>Mensagem de erro</>}
@@ -124,13 +94,13 @@ export const Praga = () => {
       ) : (
         <>
           {data && (
-            <DataTable<PragaType>
+            <DataTable<UsuarioType>
               dataKey="id"
               globalFilterValue={search}
-              globalFilterFields={["comumName", "cientificName"]}
+              globalFilterFields={["name", "email"]}
               paginatorRight={
                 <>
-                  {selectedPraga && (
+                  {selectedUsuario && (
                     <div className="flex gap-2">
                       <Button
                         color="blue"
@@ -140,32 +110,21 @@ export const Praga = () => {
                         type="button"
                         onClick={() =>
                           ui.show({
-                            id: "update-praga",
+                            id: "update-usuario",
                             content: (
-                              <FormPraga
+                              <FormUsuario
                                 action="update"
-                                praga={selectedPraga}
-                                refetch={() => {
-                                  refetch();
-                                  setSelectedPraga(undefined);
-                                }}
+                                usuario={selectedUsuario}
+                                refetch={refetch}
                               />
                             ),
                             type: "modal",
                             options: {
-                              titulo: "Editar Praga",
+                              titulo: "Editar Usuário",
                               position: "right",
                             },
                           })
                         }
-                      />
-                      <Button
-                        color="red"
-                        title="Deletar"
-                        icon={<TrashIcon />}
-                        positionIcon="left"
-                        type="button"
-                        onClick={() => deletarPraga(selectedPraga.id)}
                       />
                     </div>
                   )}
@@ -174,16 +133,16 @@ export const Praga = () => {
               header={{
                 btnLeft: [
                   {
-                    title: "Cadastrar Praga",
+                    title: "Cadastrar Usuário",
                     onClick: () => {
                       ui.show({
-                        id: "create-praga",
+                        id: "create-usuario",
                         content: (
-                          <FormPraga action="create" refetch={refetch} />
+                          <FormUsuario action="create" refetch={refetch} />
                         ),
                         type: "modal",
                         options: {
-                          titulo: "Cadastrar Praga",
+                          titulo: "Cadastrar Usuário",
                           position: "right",
                         },
                       });
@@ -196,12 +155,12 @@ export const Praga = () => {
                   placeholder: "Pesquisar",
                 },
               }}
-              value={data}
+              value={data.users}
               columns={columns}
               rows={10}
               selectionMode="single"
-              onSelectionChange={setSelectedPraga}
-              selection={selectedPraga}
+              onSelectionChange={setSelectedUsuario}
+              selection={selectedUsuario}
               paginator
             />
           )}

@@ -6,6 +6,7 @@ import {
   Praga,
   Cliente,
   Monitoramento,
+  Usuario,
 } from "pages";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -18,6 +19,11 @@ export const Router = createBrowserRouter([
       {
         path: "/",
         Component: HomePage,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/usuario",
+        Component: Usuario,
         errorElement: <ErrorPage />,
       },
       {
