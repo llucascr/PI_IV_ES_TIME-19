@@ -1,5 +1,13 @@
 export type FetchResponse<T> = T extends { data: infer R } ? R : never;
 
+export type FetchErrorResponse = {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance: string;
+};
+
 export type HttpMethod =
   | "GET"
   | "POST"
