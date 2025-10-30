@@ -117,96 +117,108 @@ export const Praga = () => {
           Listagem de Pragas
         </h1>
       </div>
-      {error && <>Mensagem de erro</>}
 
-      {loaded && !error ? (
-        <>Carregando Placeholder...</>
-      ) : (
-        <>
-          {data && (
-            <DataTable<PragaType>
-              dataKey="id"
-              globalFilterValue={search}
-              globalFilterFields={["comumName", "cientificName"]}
-              paginatorRight={
-                <>
-                  {selectedPraga && (
-                    <div className="flex gap-2">
-                      <Button
-                        color="blue"
-                        title="Editar"
-                        icon={<NotePencilIcon />}
-                        positionIcon="left"
-                        type="button"
-                        onClick={() =>
+      <div className="w-full h-auto border border-gray-300 rounded-2xl cursor-pointer">
+        {/* Header */}
+        <div className="bg-gray-100 border-b border-gray-300/70 rounded-t-2xl px-6 py-3 text-md font-medium flex justify-start items-center gap-2"></div>
+
+        {/* DataTable */}
+        <div className="my-8 mx-2">
+          {error && <>Mensagem de erro</>}
+
+          {loaded && !error ? (
+            <>Carregando Placeholder...</>
+          ) : (
+            <>
+              {data && (
+                <DataTable<PragaType>
+                  dataKey="id"
+                  globalFilterValue={search}
+                  globalFilterFields={["comumName", "cientificName"]}
+                  paginatorRight={
+                    <>
+                      {selectedPraga && (
+                        <div className="flex gap-2">
+                          <Button
+                            color="blue"
+                            title="Editar"
+                            icon={<NotePencilIcon />}
+                            positionIcon="left"
+                            type="button"
+                            onClick={() =>
+                              ui.show({
+                                id: "update-praga",
+                                content: (
+                                  <FormPraga
+                                    action="update"
+                                    praga={selectedPraga}
+                                    refetch={() => {
+                                      refetch();
+                                      setSelectedPraga(undefined);
+                                    }}
+                                  />
+                                ),
+                                type: "modal",
+                                options: {
+                                  titulo: "Editar Praga",
+                                  position: "right",
+                                },
+                              })
+                            }
+                          />
+                          <Button
+                            color="red"
+                            title="Deletar"
+                            icon={<TrashIcon />}
+                            positionIcon="left"
+                            type="button"
+                            onClick={() => deletarPraga(selectedPraga.id)}
+                          />
+                        </div>
+                      )}
+                    </>
+                  }
+                  header={{
+                    btnLeft: [
+                      {
+                        title: "Cadastrar Praga",
+                        onClick: () => {
                           ui.show({
-                            id: "update-praga",
+                            id: "create-praga",
                             content: (
-                              <FormPraga
-                                action="update"
-                                praga={selectedPraga}
-                                refetch={() => {
-                                  refetch();
-                                  setSelectedPraga(undefined);
-                                }}
-                              />
+                              <FormPraga action="create" refetch={refetch} />
                             ),
                             type: "modal",
                             options: {
-                              titulo: "Editar Praga",
+                              titulo: "Cadastrar Praga",
                               position: "right",
                             },
-                          })
-                        }
-                      />
-                      <Button
-                        color="red"
-                        title="Deletar"
-                        icon={<TrashIcon />}
-                        positionIcon="left"
-                        type="button"
-                        onClick={() => deletarPraga(selectedPraga.id)}
-                      />
-                    </div>
-                  )}
-                </>
-              }
-              header={{
-                btnLeft: [
-                  {
-                    title: "Cadastrar Praga",
-                    onClick: () => {
-                      ui.show({
-                        id: "create-praga",
-                        content: (
-                          <FormPraga action="create" refetch={refetch} />
-                        ),
-                        type: "modal",
-                        options: {
-                          titulo: "Cadastrar Praga",
-                          position: "right",
+                          });
                         },
-                      });
+                      },
+                    ],
+                    inputSearch: {
+                      globalFilterValue: search,
+                      onGlobalFilterChange: setSearch,
+                      placeholder: "Pesquisar",
                     },
-                  },
-                ],
-                inputSearch: {
-                  globalFilterValue: search,
-                  onGlobalFilterChange: setSearch,
-                  placeholder: "Pesquisar",
-                },
-              }}
-              value={data}
-              columns={columns}
-              rows={10}
-              selectionMode="single"
-              onSelectionChange={setSelectedPraga}
-              selection={selectedPraga}
-              paginator
-            />
+                  }}
+                  value={data}
+                  columns={columns}
+                  rows={10}
+                  selectionMode="single"
+                  onSelectionChange={setSelectedPraga}
+                  selection={selectedPraga}
+                  paginator
+                />
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-gray-300/70  rounded-b-2xl px-6 py-3 text-md font-medium flex justify-between items-center max-sm:flex-col max-sm:gap-2"></div>
+      </div>
     </div>
   );
 };

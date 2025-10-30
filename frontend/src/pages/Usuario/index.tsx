@@ -87,85 +87,100 @@ export const Usuario = () => {
           Listagem de Usuários
         </h1>
       </div>
-      {error && <>Mensagem de erro</>}
 
-      {loaded && !error ? (
-        <>Carregando Placeholder...</>
-      ) : (
-        <>
-          {data && (
-            <DataTable<UsuarioType>
-              dataKey="id"
-              globalFilterValue={search}
-              globalFilterFields={["name", "email"]}
-              paginatorRight={
-                <>
-                  {selectedUsuario && (
-                    <div className="flex gap-2">
-                      <Button
-                        color="blue"
-                        title="Editar"
-                        icon={<NotePencilIcon />}
-                        positionIcon="left"
-                        type="button"
-                        onClick={() =>
+      <div className="w-full h-auto border border-gray-300 rounded-2xl cursor-pointer">
+        {/* Header */}
+        <div className="bg-gray-100 border-b border-gray-300/70 rounded-t-2xl px-6 py-3 text-md font-medium flex justify-start items-center gap-2">
+          <strong>Organização: </strong>
+          <h3>{data?.name}</h3>
+        </div>
+
+        {/* DataTable */}
+        <div className="my-8 mx-2">
+          {error && <>Mensagem de erro</>}
+
+          {loaded && !error ? (
+            <>Carregando Placeholder...</>
+          ) : (
+            <>
+              {data && (
+                <DataTable<UsuarioType>
+                  dataKey="id"
+                  globalFilterValue={search}
+                  globalFilterFields={["name", "email"]}
+                  paginatorRight={
+                    <>
+                      {selectedUsuario && (
+                        <div className="flex gap-2">
+                          <Button
+                            color="blue"
+                            title="Editar"
+                            icon={<NotePencilIcon />}
+                            positionIcon="left"
+                            type="button"
+                            onClick={() =>
+                              ui.show({
+                                id: "update-usuario",
+                                content: (
+                                  <FormUsuario
+                                    action="update"
+                                    usuario={selectedUsuario}
+                                    refetch={refetch}
+                                  />
+                                ),
+                                type: "modal",
+                                options: {
+                                  titulo: "Editar Usuário",
+                                  position: "right",
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      )}
+                    </>
+                  }
+                  header={{
+                    btnLeft: [
+                      {
+                        title: "Cadastrar Usuário",
+                        onClick: () => {
                           ui.show({
-                            id: "update-usuario",
+                            id: "create-usuario",
                             content: (
-                              <FormUsuario
-                                action="update"
-                                usuario={selectedUsuario}
-                                refetch={refetch}
-                              />
+                              <FormUsuario action="create" refetch={refetch} />
                             ),
                             type: "modal",
                             options: {
-                              titulo: "Editar Usuário",
+                              titulo: "Cadastrar Usuário",
                               position: "right",
                             },
-                          })
-                        }
-                      />
-                    </div>
-                  )}
-                </>
-              }
-              header={{
-                btnLeft: [
-                  {
-                    title: "Cadastrar Usuário",
-                    onClick: () => {
-                      ui.show({
-                        id: "create-usuario",
-                        content: (
-                          <FormUsuario action="create" refetch={refetch} />
-                        ),
-                        type: "modal",
-                        options: {
-                          titulo: "Cadastrar Usuário",
-                          position: "right",
+                          });
                         },
-                      });
+                      },
+                    ],
+                    inputSearch: {
+                      globalFilterValue: search,
+                      onGlobalFilterChange: setSearch,
+                      placeholder: "Pesquisar",
                     },
-                  },
-                ],
-                inputSearch: {
-                  globalFilterValue: search,
-                  onGlobalFilterChange: setSearch,
-                  placeholder: "Pesquisar",
-                },
-              }}
-              value={data.users}
-              columns={columns}
-              rows={10}
-              selectionMode="single"
-              onSelectionChange={setSelectedUsuario}
-              selection={selectedUsuario}
-              paginator
-            />
+                  }}
+                  value={data.users}
+                  columns={columns}
+                  rows={10}
+                  selectionMode="single"
+                  onSelectionChange={setSelectedUsuario}
+                  selection={selectedUsuario}
+                  paginator
+                />
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-gray-300/70  rounded-b-2xl px-6 py-3 text-md font-medium flex justify-between items-center max-sm:flex-col max-sm:gap-2"></div>
+      </div>
     </div>
   );
 };
