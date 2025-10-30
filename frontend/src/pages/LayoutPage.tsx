@@ -36,7 +36,7 @@ export const LayoutPage = ({ children }: LayoutProps) => {
       <UIProvider>
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar Menu */}
-          <div className="w-80 flex flex-col border-r border-slate-200">
+          <div className="w-70 flex flex-col border-r border-slate-200">
             <div className="flex items-center gap-4 bg-white p-4 shadow-sm">
               <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden border border-gray-300 bg-gray-200">
                 {fotoPerfil ? (
@@ -60,12 +60,12 @@ export const LayoutPage = ({ children }: LayoutProps) => {
               </div>
             </div>
 
-            <nav className="flex flex-col gap-4 mt-6  px-8">
+            <nav className="flex flex-col gap-4 mt-6  px-4">
               <NavLink to="" className={navItemStyle}>
                 <House size={28} />
                 Visão geral
               </NavLink>
-              <NavLink to="" className={navItemStyle}>
+              <NavLink to="usuario" className={navItemStyle}>
                 <Users size={28} />
                 Lista de usuários
               </NavLink>
@@ -73,7 +73,7 @@ export const LayoutPage = ({ children }: LayoutProps) => {
                 <BugBeetle size={28} />
                 Pragas
               </NavLink>
-              <NavLink to="" className={navItemStyle}>
+              <NavLink to="monitoramento" className={navItemStyle}>
                 <ClipboardText size={28} />
                 Monitoramento
               </NavLink>
@@ -88,13 +88,9 @@ export const LayoutPage = ({ children }: LayoutProps) => {
             </nav>
           </div>
 
-          <main className="flex-1 h-screen p-4 w-full bg-[#E0E0E0] overflow-auto">
-            <div className="flex h-full w-full">
-              <div className="flex-1 rounded-lg bg-white p-1 overflow-auto shadow-md">
-                {children}
-                <Outlet />
-              </div>
-            </div>
+          <main className="flex-1 h-screen p-4 w-full bg-[#F3F6FA] overflow-auto">
+            {children}
+            <Outlet />
           </main>
         </div>
       </UIProvider>
