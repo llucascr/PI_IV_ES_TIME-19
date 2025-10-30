@@ -1,5 +1,6 @@
 package com.puc.PI4.Software.Morango.infra.security;
 
+import com.puc.PI4.Software.Morango.exceptions.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigurations {
 
     private final SecurityFilter securityFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -29,11 +31,12 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/user").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/organization/create").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/organization/insertEmployee").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((customAuthenticationEntryPoint)))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
