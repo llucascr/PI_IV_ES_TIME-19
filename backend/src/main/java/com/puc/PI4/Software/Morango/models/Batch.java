@@ -1,6 +1,7 @@
 package com.puc.PI4.Software.Morango.models;
 
 
+import com.puc.PI4.Software.Morango.dto.enums.BatchSituation;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,6 +25,8 @@ public class Batch {
 
     private String name;
     private Double area;
+
+    private BatchSituation situation;
 
     private String clientId;
     private String organizationId;
