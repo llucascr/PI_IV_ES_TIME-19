@@ -19,4 +19,5 @@ public class BatchResponse {
 
     private String clientEmail;
     private String organizationName;
+    private String organizationCNPJ;
 }

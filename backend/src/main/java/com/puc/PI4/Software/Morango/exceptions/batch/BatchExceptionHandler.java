@@ -15,4 +15,12 @@ public class BatchExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(BatchInvalidArguments.class)
+    public ProblemDetail batchInvalidArguments(BatchInvalidArguments e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
