@@ -27,4 +27,9 @@ public class BatchController {
         return ResponseEntity.status(HttpStatus.OK).body(batchService.updateBatch(batchId, batchRequest));
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<BatchResponse> deleteBatch(@RequestParam String batchId) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.deleteBatch(batchId));
+    }
+
 }

@@ -100,4 +100,26 @@ public class BatchService {
         return response;
 
     }
+
+    public BatchResponse deleteBatch(String batchId) {
+        Batch batch = batchRepository.findById(batchId).orElseThrow(
+                ()-> new BatchNotFound("Batch not found"));
+        if(batch.getSituation() == DEACTIVATED)
+            throw new BatchInvalidArguments("Batch has been already deactivated");
+
+        Organization organization = organizationRepository.findById(batch.getOrganizationId()).orElseThrow(
+                () -> new OrganizationNotFound("Organization not found"));
+        Client client = clientRepository.findById(batch.getClientId()).orElseThrow(
+                () -> new ClientNotFound("Client not found"));
+
+        batch.setSituation(DEACTIVATED);
+        Batch savedBatch = batchRepository.save(batch);
+
+        BatchResponse response = modelMapper.map(savedBatch, BatchResponse.class);
+        response.setClientEmail(client.getEmail());
+        response.setOrganizationName(organization.getName());
+        response.setOrganizationCNPJ(organization.getCnpj());
+
+        return response;
+    }
 }
