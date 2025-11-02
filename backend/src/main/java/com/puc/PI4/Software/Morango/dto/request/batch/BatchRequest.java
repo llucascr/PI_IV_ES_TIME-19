@@ -1,5 +1,6 @@
 package com.puc.PI4.Software.Morango.dto.request.batch;
 
+import com.puc.PI4.Software.Morango.dto.enums.BatchSituation;
 import lombok.*;
 
 @Getter
@@ -12,4 +13,5 @@ public class BatchRequest {
     private Double area;
     private String clientId;
     private String organizationId;
+    private BatchSituation situation;
 }

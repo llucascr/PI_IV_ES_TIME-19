@@ -2,7 +2,8 @@ package com.puc.PI4.Software.Morango.dto.enums;
 
 public enum BatchSituation {
     RESERVED("reserved"),
-    SOLD("sold");
+    SOLD("sold"),
+    DEACTIVATED("deactivated"),;
 
     private String situation;
 
