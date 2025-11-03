@@ -42,6 +42,7 @@ public class PragueService {
             throw new PragueInvalidFormat("Request invalid or missing fields");
         }
 
+
         Prague prague = Prague.builder()
                 .id(UUID.randomUUID().toString())
                 .comumName(pragueRequest.getComumName())
@@ -55,9 +56,18 @@ public class PragueService {
         Prague prague = pragueRepository.findById(pragueId).orElseThrow(
                 () -> new PragueNotFound("Prague with id " + pragueId + " not found")
         );
-        if (isPragueValid(pragueRequest)) {
+        if (!isPragueValid(pragueRequest)) {
             throw new PragueInvalidFormat("Request invalid or missing fields");
         }
+        pragueRepository.findByCientificName(pragueRequest.getCientificName())
+                .ifPresent(existing -> {
+                    // se for diferente do ID atual → erro
+                    if (!existing.getId().equals(pragueId)) {
+                        throw new PragueAlreadyExists(
+                                "A prague with cientific name '" + pragueRequest.getCientificName() + "' already exists"
+                        );
+                    }
+                });
 
         Prague updatedPrage = Prague.builder()
                 ._id(prague.get_id())
