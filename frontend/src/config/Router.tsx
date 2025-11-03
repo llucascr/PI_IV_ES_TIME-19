@@ -1,4 +1,13 @@
-import { ErrorPage, HomePage, LayoutPage, LoginPage, Praga, Cliente} from "pages";
+import {
+  ErrorPage,
+  HomePage,
+  LayoutPage,
+  LoginPage,
+  Praga,
+  Cliente,
+  Monitoramento,
+  Usuario,
+} from "pages";
 import { createBrowserRouter } from "react-router-dom";
 
 export const Router = createBrowserRouter([
@@ -13,8 +22,18 @@ export const Router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
+        path: "/usuario",
+        Component: Usuario,
+        errorElement: <ErrorPage />,
+      },
+      {
         path: "/praga",
         Component: Praga,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/monitoramento",
+        Component: Monitoramento,
         errorElement: <ErrorPage />,
       },
       {

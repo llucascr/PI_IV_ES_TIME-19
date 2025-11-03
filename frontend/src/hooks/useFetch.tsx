@@ -69,6 +69,7 @@ export const useFetch = <T extends { data: FetchResponse<T> }>({
           ...options.headers,
         },
       });
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status}: ${response.statusText}`);
       }

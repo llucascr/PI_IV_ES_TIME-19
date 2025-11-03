@@ -63,6 +63,7 @@ public class PostService {
                 ()-> new PostNotFound("Post not found"));
 
         Post postUpdated = Post.builder()
+                ._id(post.get_id())
                 .id(post.getId())
                 .title(postRequest.getTitle() != null ? postRequest.getTitle() : post.getTitle())
                 .description(postRequest.getDescription() != null ? postRequest.getDescription() : post.getDescription())

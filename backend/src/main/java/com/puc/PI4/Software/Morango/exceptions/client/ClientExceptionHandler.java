@@ -1,0 +1,27 @@
+package com.puc.PI4.Software.Morango.exceptions.client;
+
+import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
+import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class ClientExceptionHandler {
+
+    @ExceptionHandler(ClientAlreadyExist.class)
+    public ProblemDetail clientAlreadyExist(ClientAlreadyExist e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
+    @ExceptionHandler(ClientNotFound.class)
+    public ProblemDetail clientNotFound(ClientNotFound e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
+}
