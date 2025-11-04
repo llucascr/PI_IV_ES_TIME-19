@@ -1,23 +1,24 @@
 package com.puc.PI4.Software.Morango.services;
 
-import com.puc.PI4.Software.Morango.dto.request.Post.PostRequest;
 import com.puc.PI4.Software.Morango.dto.request.batch.BatchRequest;
-import com.puc.PI4.Software.Morango.dto.response.Post.PostResponse;
 import com.puc.PI4.Software.Morango.dto.response.batch.BatchResponse;
 import com.puc.PI4.Software.Morango.exceptions.batch.BatchInvalidArguments;
 import com.puc.PI4.Software.Morango.exceptions.batch.BatchNotFound;
 import com.puc.PI4.Software.Morango.exceptions.client.ClientNotFound;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
-import com.puc.PI4.Software.Morango.exceptions.post.PostNotFound;
 import com.puc.PI4.Software.Morango.models.*;
 import com.puc.PI4.Software.Morango.repositories.BatchRepository;
 import com.puc.PI4.Software.Morango.repositories.ClientRepository;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -140,5 +141,29 @@ public class BatchService {
 
         return response;
 
+    }
+
+    public Page<BatchResponse> listAllBatches(int page, int numberOfPosts){
+        Pageable pageable = PageRequest.of(page, numberOfPosts);
+        Page<Batch> batches = batchRepository.findAll(pageable);
+
+        return new PageImpl<>(modelMapperBatchResponse(batches), pageable, batches.getTotalElements());
+    }
+
+    private List<BatchResponse> modelMapperBatchResponse(Page<Batch> batches) {
+        return batches.getContent().stream()
+                .map(batch -> {
+                    Organization organization = organizationRepository.findById(batch.getOrganizationId()).orElseThrow(
+                            () -> new OrganizationNotFound("Organization not found"));
+                    Client client = clientRepository.findById(batch.getClientId()).orElseThrow(
+                            () -> new ClientNotFound("Client not found"));
+                    BatchResponse response = modelMapper.map(batch, BatchResponse.class);
+                    response.setClientEmail(client.getEmail());
+                    response.setOrganizationName(organization.getName());
+                    response.setOrganizationCNPJ(organization.getCnpj());
+
+                    return response;
+                })
+                .toList();
     }
 }

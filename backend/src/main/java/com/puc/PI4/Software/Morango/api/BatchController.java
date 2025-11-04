@@ -1,14 +1,14 @@
 package com.puc.PI4.Software.Morango.api;
 
-import com.puc.PI4.Software.Morango.dto.request.Post.PostRequest;
 import com.puc.PI4.Software.Morango.dto.request.batch.BatchRequest;
-import com.puc.PI4.Software.Morango.dto.response.Post.PostResponse;
 import com.puc.PI4.Software.Morango.dto.response.batch.BatchResponse;
 import com.puc.PI4.Software.Morango.services.BatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,6 +35,14 @@ public class BatchController {
     @GetMapping("/find")
     public ResponseEntity<BatchResponse> findBatch(@RequestParam String batchId) {
         return ResponseEntity.status(HttpStatus.OK).body(batchService.findBatchById(batchId));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<BatchResponse>> listAllBatches(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfBatches
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.listAllBatches(page, numberOfBatches).getContent());
     }
 
 }
