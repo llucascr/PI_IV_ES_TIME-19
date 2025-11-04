@@ -45,4 +45,14 @@ public class BatchController {
         return ResponseEntity.status(HttpStatus.OK).body(batchService.listAllBatches(page, numberOfBatches).getContent());
     }
 
+    @GetMapping("/listBy")
+    public ResponseEntity<List<BatchResponse>> listBatchesByOrgAndClient(
+            @RequestParam(defaultValue = "", required = false) String organizationId,
+            @RequestParam(defaultValue = "", required = false) String clientId,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfBatches
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.listBatchesByOrgAndClient(organizationId, clientId, page, numberOfBatches).getContent());
+    }
+
 }

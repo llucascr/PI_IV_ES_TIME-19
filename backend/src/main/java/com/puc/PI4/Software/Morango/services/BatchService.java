@@ -143,9 +143,26 @@ public class BatchService {
 
     }
 
-    public Page<BatchResponse> listAllBatches(int page, int numberOfPosts){
-        Pageable pageable = PageRequest.of(page, numberOfPosts);
+    public Page<BatchResponse> listAllBatches(int page, int numberOfBatches){
+        Pageable pageable = PageRequest.of(page, numberOfBatches);
         Page<Batch> batches = batchRepository.findAll(pageable);
+
+        return new PageImpl<>(modelMapperBatchResponse(batches), pageable, batches.getTotalElements());
+    }
+
+    public Page<BatchResponse> listBatchesByOrgAndClient(String organizationId, String clientId, int page, int numberOfBatches){
+        if(organizationId == null || organizationId.isEmpty()){
+            throw new BatchInvalidArguments("Organization Id cannot be empty");
+        }
+
+        Pageable pageable = PageRequest.of(page, numberOfBatches);
+
+        if(clientId == null || clientId.isEmpty()){
+            Page<Batch> batches = batchRepository.findByOrganizationId(organizationId, pageable);
+            return new PageImpl<>(modelMapperBatchResponse(batches), pageable, batches.getTotalElements());
+        }
+
+        Page<Batch> batches = batchRepository.listByOrgAndClient(organizationId, clientId, pageable);
 
         return new PageImpl<>(modelMapperBatchResponse(batches), pageable, batches.getTotalElements());
     }
