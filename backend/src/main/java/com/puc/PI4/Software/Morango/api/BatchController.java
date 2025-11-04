@@ -32,4 +32,9 @@ public class BatchController {
         return ResponseEntity.status(HttpStatus.OK).body(batchService.deleteBatch(batchId));
     }
 
+    @GetMapping("/find")
+    public ResponseEntity<BatchResponse> findBatch(@RequestParam String batchId) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.findBatchById(batchId));
+    }
+
 }

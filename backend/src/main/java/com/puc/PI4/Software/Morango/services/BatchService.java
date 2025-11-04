@@ -122,4 +122,23 @@ public class BatchService {
 
         return response;
     }
+
+    public BatchResponse findBatchById(String batchId) {
+        Batch batch = batchRepository.findById(batchId).orElseThrow(
+                ()-> new BatchNotFound("Batch not found")
+        );
+
+        Organization organization = organizationRepository.findById(batch.getOrganizationId()).orElseThrow(
+                () -> new OrganizationNotFound("Organization not found"));
+        Client client = clientRepository.findById(batch.getClientId()).orElseThrow(
+                () -> new ClientNotFound("Client not found"));
+
+        BatchResponse response = modelMapper.map(batch, BatchResponse.class);
+        response.setClientEmail(client.getEmail());
+        response.setOrganizationName(organization.getName());
+        response.setOrganizationCNPJ(organization.getCnpj());
+
+        return response;
+
+    }
 }
