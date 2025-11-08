@@ -1,8 +1,7 @@
-package org.example;
+package org.servidor;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class Parceiro

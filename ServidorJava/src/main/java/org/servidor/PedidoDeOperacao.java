@@ -1,4 +1,4 @@
-package org.example;
+package org.servidor;
 
 public class PedidoDeOperacao extends Comunicado
 {
