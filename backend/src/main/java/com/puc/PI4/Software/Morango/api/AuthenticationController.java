@@ -1,8 +1,7 @@
 package com.puc.PI4.Software.Morango.api;
 
-import com.puc.PI4.Software.Morango.dto.enums.UserRole;
-import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationResponse;
-import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResponse;
+import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationRequest;
+import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.EmailResponse;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.User;
@@ -32,7 +31,7 @@ public class AuthenticationController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationResponse data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationRequest data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -42,7 +41,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterResponse data) {
+    public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
         if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
 
         String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
@@ -51,6 +50,7 @@ public class AuthenticationController {
                 .name(data.getName())
                 .email(data.getEmail())
                 .password(ecryptedPassword)
+                .cpf(data.getCpf())
                 .createAt(LocalDateTime.now())
                 .active(true)
                 .role(data.getRole())
