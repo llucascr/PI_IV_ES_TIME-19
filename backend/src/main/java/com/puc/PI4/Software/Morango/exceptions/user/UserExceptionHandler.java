@@ -1,9 +1,16 @@
 package com.puc.PI4.Software.Morango.exceptions.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class UserExceptionHandler {
@@ -53,6 +60,19 @@ public class UserExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
         problem.setTitle(e.getCode());
         problem.setDetail(e.getMessage());
+        return problem;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidationExceptions(MethodArgumentNotValidException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setTitle("Validation Error");
+        problem.setDetail("One or more filds are invalid");
+        Map<String, String> fields = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            fields.put(error.getField(), error.getDefaultMessage());
+        });
+        problem.setProperty("fields", fields);
         return problem;
     }
 

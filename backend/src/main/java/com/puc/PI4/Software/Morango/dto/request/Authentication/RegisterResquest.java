@@ -10,14 +10,18 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RegisterResquest {
-    @NotBlank
+    @NotBlank(message = "Required Name")
     private String name;
-    @NotBlank
+
+    @NotBlank(message = "Required Email")
     private String email;
-    @NotBlank
+
+    @NotBlank(message = "Required Password")
     private String password;
-    @NotBlank
+
+    @NotBlank(message = "Required CPF")
     private String cpf;
+
     @NonNull
     private UserRole role;
 }
