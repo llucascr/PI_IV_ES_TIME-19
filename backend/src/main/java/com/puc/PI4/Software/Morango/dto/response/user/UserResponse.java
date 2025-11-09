@@ -15,6 +15,7 @@ public class UserResponse {
     private String id;
     private String name;
     private String email;
+    private String cpf;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private Boolean active;

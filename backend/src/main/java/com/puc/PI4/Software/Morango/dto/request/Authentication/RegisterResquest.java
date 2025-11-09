@@ -9,13 +9,19 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterResponse {
-    @NotBlank
+public class RegisterResquest {
+    @NotBlank(message = "Required Name")
     private String name;
-    @NotBlank
+
+    @NotBlank(message = "Required Email")
     private String email;
-    @NotBlank
+
+    @NotBlank(message = "Required Password")
     private String password;
+
+    @NotBlank(message = "Required CPF")
+    private String cpf;
+
     @NonNull
     private UserRole role;
 }
