@@ -7,6 +7,8 @@ export type ConfigType = {
   apiUrl: string;
   aplicacaoUrl: string;
   tokenCookieNome: string;
+  organizacaoCookieNome: string;
+
   logo: string;
 
   UIContext: UIContextType;
