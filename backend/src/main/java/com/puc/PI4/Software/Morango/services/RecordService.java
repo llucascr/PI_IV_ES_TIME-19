@@ -3,6 +3,8 @@ package com.puc.PI4.Software.Morango.services;
 import com.puc.PI4.Software.Morango.dto.enums.RecordStatus;
 import com.puc.PI4.Software.Morango.dto.request.Record.RecordRequest;
 import com.puc.PI4.Software.Morango.dto.response.Record.RecordResponse;
+import com.puc.PI4.Software.Morango.exceptions.batch.BatchNotFound;
+import com.puc.PI4.Software.Morango.exceptions.client.ClientNotFound;
 import com.puc.PI4.Software.Morango.exceptions.record.RecordNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
 import com.puc.PI4.Software.Morango.models.*;
@@ -28,11 +30,20 @@ public class RecordService {
     private final RecordCustomRepository recordCustomRepository;
 
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+    private final BatchRepository batchRepository;
 
     public RecordResponse createRecord(RecordRequest recordRequest) {
 
         User user = userRepository.findById(recordRequest.getUserId()).orElseThrow(
                 () -> new UserNotFound("User not found"));
+
+        Client client = clientRepository.findById(recordRequest.getClientId()).orElseThrow(
+                () -> new ClientNotFound("Client not found"));
+
+        Batch batch = batchRepository.findById(recordRequest.getBatchId()).orElseThrow(
+                () -> new BatchNotFound("Batch not found")
+        );
 
         RecordStatus status = RecordStatus.fromValue(recordRequest.getDevelopmentStatus());
 
@@ -47,8 +58,8 @@ public class RecordService {
                 .observation(recordRequest.getObservation())
                 .userId(recordRequest.getUserId())
                 .organizationId(user.getIdOrganization())
-                .clientId(recordRequest.getClientId())
-                .batchId(recordRequest.getBatchId())
+                .clientId(client.getId())
+                .batchId(batch.getId())
                 .createAt(LocalDateTime.now())
                 .build();
 
@@ -72,7 +83,7 @@ public class RecordService {
 
     public RecordResponse delete(String recordId) {
         RecordResponse dto = recordCustomRepository.findById(recordId).orElseThrow(
-                ()-> new RecordNotFound("Record not found"));
+                () -> new RecordNotFound("Record not found"));
 
         recordRepository.deleteOneByIdAndOrganization(dto.getId(), dto.getOrganization().getId());
 
@@ -81,7 +92,7 @@ public class RecordService {
 
     public RecordResponse update(String recordId, RecordRequest recordRequest) {
         Record record = recordRepository.findById(recordId).orElseThrow(
-                ()-> new RecordNotFound("Record not found"));
+                () -> new RecordNotFound("Record not found"));
 
         RecordStatus status = RecordStatus.fromValue(recordRequest.getDevelopmentStatus());
 
