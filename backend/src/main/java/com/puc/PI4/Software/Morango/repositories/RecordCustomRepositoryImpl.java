@@ -97,6 +97,20 @@ public class RecordCustomRepositoryImpl implements RecordCustomRepository {
     }
 
     @Override
+    public Page<RecordResponse> findAllEnrichedByOrg(Pageable pageable, String id) {
+        Criteria criteria = Criteria.where("organizationId").is(id);
+        Aggregation aggregation = buildEnrichmentPipeline(criteria, pageable);
+
+
+        List<RecordResponse> records = mongoTemplate
+                .aggregate(aggregation, "record", RecordResponse.class)
+                .getMappedResults();
+
+        long total = mongoTemplate.getCollection("record").countDocuments();
+        return new PageImpl<>(records, pageable, total);
+    }
+
+    @Override
     public Page<RecordResponse> findAllEnriched(Pageable pageable) {
         Aggregation aggregation = buildEnrichmentPipeline(pageable);
 

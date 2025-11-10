@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -93,6 +94,13 @@ public class RecordService {
     public RecordResponse listById(String recordId) {
         return recordCustomRepository.findById(recordId)
                 .orElseThrow(() -> new RecordNotFound("Record not found"));
+    }
+
+    public Page<RecordResponse> listByOrg(int page, int numberOfPosts, String organizationId) {
+        Pageable pageable = PageRequest.of(page, numberOfPosts);
+        Page<RecordResponse> records = recordCustomRepository.findAllEnrichedByOrg(pageable, organizationId);
+
+        return new PageImpl<>(records.stream().toList(), pageable, records.getTotalElements());
     }
 
     public RecordResponse delete(String recordId) {

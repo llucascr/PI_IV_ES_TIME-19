@@ -45,6 +45,15 @@ public class RecordController {
         return ResponseEntity.status(HttpStatus.OK).body(recordService.listById(recordId));
     }
 
+    @GetMapping("/listByOrg")
+    public ResponseEntity<List<RecordResponse>> listByOrg(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfPosts,
+            @RequestParam String organizationId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(recordService.listByOrg(page, numberOfPosts, organizationId).getContent());
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<RecordResponse> deletePost(@RequestParam String recordId) {
         return ResponseEntity.status(HttpStatus.OK).body(recordService.delete(recordId));
