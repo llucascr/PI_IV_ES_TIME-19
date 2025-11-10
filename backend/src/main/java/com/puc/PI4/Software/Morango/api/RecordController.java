@@ -34,8 +34,9 @@ public class RecordController {
     @PutMapping("/prague/update")
     public RecordResponse updatePrague(
             @RequestParam String recordId,
-            @RequestParam String pragueId) {
-        return recordService.updatePrague(recordId, pragueId);
+            @RequestParam String pragueId,
+            @RequestParam int evaluatedPlantsCount) {
+        return recordService.updatePrague(recordId, pragueId, evaluatedPlantsCount);
     }
 
     @GetMapping("/listById")

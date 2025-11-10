@@ -56,8 +56,8 @@ public class RecordCustomRepositoryImpl implements RecordCustomRepository {
 
         // Project
         operations.add(Aggregation.project("id", "dataHora", "observation", "developmentStatus",
-                        "evaluatedPlantsCount", "attackedPlantsCount",
-                        "infestationPercentage", "investmentLevel", "createAt")
+                        "plantsCount", "evaluatedPlantsCount", "attackedPlantsCount",
+                        "infestationPercentage", "createAt")
                 .and("user.id").as("user.id")
                 .and("user.name").as("user.name")
                 .and("user.email").as("user.email")

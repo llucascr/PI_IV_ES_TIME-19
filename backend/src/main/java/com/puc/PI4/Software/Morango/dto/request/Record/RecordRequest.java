@@ -32,8 +32,8 @@ public class RecordRequest {
     @ValidRecordStatus
     private String developmentStatus;
 
-    @Min(value = 1, message = "Investment level must be greater than 0")
-    private int investmentLevel;
+    @Min(value = 1, message = "The number of plants must be greater than 0")
+    private int plantsCount;
 
     @Min(value = 0, message = "Evaluated plants count cannot be negative")
     private int evaluatedPlantsCount;

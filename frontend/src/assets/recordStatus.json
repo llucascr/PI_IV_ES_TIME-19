@@ -1,0 +1,20 @@
+{
+  "seedling": "Muda recém-plantada",
+  "vegetative_growth": "Crescimento vegetativo",
+  "flowering": "Floração",
+  "fruiting": "Frutificação",
+  "ripening": "Maturação dos frutos",
+  "harvest": "Colheita",
+  "post_harvest": "Pós-colheita",
+  "scheduled": "Monitoramento programado",
+  "in_progress": "Em andamento",
+  "completed": "Finalizado",
+  "pending_review": "Aguardando validação",
+  "cancelled": "Cancelado",
+  "healthy": "Cultivo saudável",
+  "at_risk": "Sob risco",
+  "infested": "Infestação confirmada",
+  "under_treatment": "Em tratamento",
+  "recovered": "Recuperado",
+  "loss": "Perda total"
+}

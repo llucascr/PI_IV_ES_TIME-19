@@ -52,8 +52,8 @@ public class RecordService {
                 .id(UUID.randomUUID().toString())
                 .dataHora(recordRequest.getDataHora())
                 .developmentStatus(status)
-                .investmentLevel(recordRequest.getInvestmentLevel())
-                .evaluatedPlantsCount(recordRequest.getEvaluatedPlantsCount())
+                .evaluatedPlantsCount(0)
+                .plantsCount(recordRequest.getPlantsCount())
                 .attackedPlantsCount(recordRequest.getAttackedPlantsCount())
                 .infestationPercentage(recordRequest.getInfestationPercentage())
                 .observation(recordRequest.getObservation())
@@ -71,12 +71,13 @@ public class RecordService {
                 .orElseThrow(() -> new RecordNotFound("Record not found"));
     }
 
-    public RecordResponse updatePrague(String recordId, String pragueId) {
+    public RecordResponse updatePrague(String recordId, String pragueId, int evaluatedPlantsCount) {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new RecordNotFound("Record not found"));
 
         record.setPragueId(pragueId);
         record.setDevelopmentStatus(RecordStatus.PENDING_REVIEW);
+        record.setEvaluatedPlantsCount(evaluatedPlantsCount);
 
         Record updated = recordRepository.save(record);
 
@@ -123,7 +124,7 @@ public class RecordService {
                 .id(record.getId())
                 .dataHora(recordRequest.getDataHora())
                 .developmentStatus(status)
-                .investmentLevel(recordRequest.getInvestmentLevel())
+                .plantsCount(recordRequest.getPlantsCount())
                 .evaluatedPlantsCount(recordRequest.getEvaluatedPlantsCount())
                 .infestationPercentage(recordRequest.getInfestationPercentage())
                 .attackedPlantsCount(recordRequest.getAttackedPlantsCount())

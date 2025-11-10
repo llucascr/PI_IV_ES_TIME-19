@@ -1,15 +1,15 @@
 import { Button, DataTable, StatusPulseDot, type Column } from "components";
 import { config } from "config";
 import { useUI } from "context";
-import { useCookie, useFetch } from "hooks";
+import { useFetch } from "hooks";
 import { useState } from "react";
 import { NotePencilIcon } from "@phosphor-icons/react";
 import type { OrganizacaoByIdType, UsuarioType } from "types";
 import { FormUsuario } from "./form";
+import { getOrganizacao } from "utils";
 
 export const Usuario = () => {
   const ui = useUI();
-  const { getCookie } = useCookie();
   const [search, setSearch] = useState<string>("");
   const [selectedUsuario, setSelectedUsuario] = useState<UsuarioType>();
 
@@ -20,7 +20,7 @@ export const Usuario = () => {
     options: {
       method: "GET",
       params: {
-        organizationId: getCookie(config.organizacaoCookieNome),
+        organizationId: getOrganizacao()?.id,
       },
     },
   });

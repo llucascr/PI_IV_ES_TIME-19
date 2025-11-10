@@ -1,6 +1,5 @@
 import { Button } from "components";
 import { useUI } from "context";
-import { v4 } from "uuid";
 import { FormConfiguracao } from "./form";
 
 export const HomePage = () => {
@@ -16,7 +15,7 @@ export const HomePage = () => {
           title="Configuração"
           onClick={() =>
             ui.show({
-              id: v4(),
+              id: "configuracao-safratech",
               content: <FormConfiguracao />,
               type: "sidebar",
               options: {

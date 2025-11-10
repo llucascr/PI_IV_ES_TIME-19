@@ -1,18 +1,49 @@
 import { Button, Input } from "components";
 import { config } from "config";
+import { useUI } from "context";
 import { useCookie } from "hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { apiFetch, getOrganizacao, saveOrganizacao } from "utils";
 
 export const FormConfiguracao = () => {
+  const ui = useUI();
   const { setCookie, getCookie } = useCookie();
 
   const [token, setToken] = useState<string>(
     getCookie(config.tokenCookieNome) || ""
   );
 
-  const [organizacaoId, setOrganizacaoId] = useState<string>(
-    getCookie(config.organizacaoCookieNome) || ""
-  );
+  const [organizacaoId, setOrganizacaoId] = useState<React.Key>("");
+
+  async function handleBuscarOrganizacao(e: any) {
+    e.preventDefault();
+
+    const { data, error } = await apiFetch({
+      url: config.apiUrl + "/organization/listById",
+      options: {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: { organizationId: organizacaoId },
+      },
+    });
+
+    if (error) {
+      console.log(error);
+    } else {
+      saveOrganizacao(data);
+
+      ui.hide("sidebar", "configuracao-safratech");
+    }
+  }
+
+  useEffect(() => {
+    const org = getOrganizacao();
+    if (org) {
+      setOrganizacaoId(org.id);
+    }
+  }, []);
 
   return (
     <div className="p-4 flex flex-col gap-4">
@@ -45,7 +76,7 @@ export const FormConfiguracao = () => {
           field="organizacaoId"
           title="Digite o ID da Organização"
           type="text"
-          value={organizacaoId}
+          value={String(organizacaoId)}
           onChange={(e) => setOrganizacaoId(e.target.value)}
         />
 
@@ -53,12 +84,12 @@ export const FormConfiguracao = () => {
           color="blue"
           title="Adicionar Organização ID"
           type="submit"
-          onClick={() => {
-            setCookie(config.organizacaoCookieNome, organizacaoId, 5);
-          }}
+          onClick={handleBuscarOrganizacao}
           disable={!organizacaoId}
         />
       </form>
+
+      <pre>{JSON.stringify(getOrganizacao(), null, 2)}</pre>
     </div>
   );
 };

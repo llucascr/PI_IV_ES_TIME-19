@@ -19,7 +19,7 @@ public class RecordResponse {
 
     private LocalDateTime dataHora;
     private RecordStatus developmentStatus;
-    private Integer investmentLevel;
+    private Integer plantsCount;
     private Integer evaluatedPlantsCount;
     private Integer attackedPlantsCount;
     private Double infestationPercentage;

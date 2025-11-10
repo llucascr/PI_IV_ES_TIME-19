@@ -33,7 +33,7 @@ public class Record {
 
     private RecordStatus developmentStatus;
 
-    private int investmentLevel;
+    private int plantsCount;
     private int evaluatedPlantsCount;
     private int attackedPlantsCount;
     private float infestationPercentage;
