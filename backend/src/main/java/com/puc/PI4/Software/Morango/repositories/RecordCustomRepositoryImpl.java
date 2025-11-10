@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import org.springframework.data.domain.Pageable;
@@ -43,12 +45,14 @@ public class RecordCustomRepositoryImpl implements RecordCustomRepository {
         operations.add(Aggregation.lookup("client", "clientId", "id", "client"));
         operations.add(Aggregation.lookup("batch", "batchId", "id", "batch"));
         operations.add(Aggregation.lookup("organization", "organizationId", "id", "organization"));
+        operations.add(Aggregation.lookup("prague", "pragueId", "id", "prague"));
 
         // Unwinds
         operations.add(Aggregation.unwind("user", true));
         operations.add(Aggregation.unwind("client", true));
         operations.add(Aggregation.unwind("batch", true));
         operations.add(Aggregation.unwind("organization", true));
+        operations.add(Aggregation.unwind("prague", true));
 
         // Project
         operations.add(Aggregation.project("id", "dataHora", "observation", "developmentStatus",
@@ -67,6 +71,7 @@ public class RecordCustomRepositoryImpl implements RecordCustomRepository {
                 .and("organization.id").as("organization.id")
                 .and("organization.name").as("organization.name")
                 .and("organization.cnpj").as("organization.cnpj")
+                .and("prague").as("prague")
         );
 
         // Paginação

@@ -31,6 +31,13 @@ public class RecordController {
         return ResponseEntity.status(HttpStatus.OK).body(recordService.listAllRecords(page, numberOfPosts).getContent());
     }
 
+    @PutMapping("/prague/update")
+    public RecordResponse updatePrague(
+            @RequestParam String recordId,
+            @RequestParam String pragueId) {
+        return recordService.updatePrague(recordId, pragueId);
+    }
+
     @GetMapping("/listById")
     public ResponseEntity<RecordResponse> listById(
             @RequestParam String recordId

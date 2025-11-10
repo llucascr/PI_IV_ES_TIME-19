@@ -30,6 +30,7 @@ public class RecordResponse {
     private Client client;
     private Batch batch;
     private Organization organization;
+    private Prague prague;
 
     @Data
     @Builder
@@ -74,6 +75,17 @@ public class RecordResponse {
         private String id;
         private String name;
         private String cnpj;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Prague {
+        @Field("id")
+        private String id;
+        private String comumName;
+        private String cientificName;
     }
 }
 

@@ -27,6 +27,7 @@ public class Record {
 
     private String clientId;
     private String batchId;
+    private String pragueId;
 
     private LocalDateTime dataHora;
 

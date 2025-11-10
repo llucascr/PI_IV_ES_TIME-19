@@ -60,12 +60,26 @@ public class RecordService {
                 .organizationId(user.getIdOrganization())
                 .clientId(client.getId())
                 .batchId(batch.getId())
+                .pragueId(null)
                 .createAt(LocalDateTime.now())
                 .build();
 
         Record saveRecord = recordRepository.save(record);
 
         return recordCustomRepository.findById(saveRecord.getId())
+                .orElseThrow(() -> new RecordNotFound("Record not found"));
+    }
+
+    public RecordResponse updatePrague(String recordId, String pragueId) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new RecordNotFound("Record not found"));
+
+        record.setPragueId(pragueId);
+        record.setDevelopmentStatus(RecordStatus.PENDING_REVIEW);
+
+        Record updated = recordRepository.save(record);
+
+        return recordCustomRepository.findById(updated.getId())
                 .orElseThrow(() -> new RecordNotFound("Record not found"));
     }
 
