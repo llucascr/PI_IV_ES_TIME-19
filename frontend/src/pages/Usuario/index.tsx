@@ -6,6 +6,7 @@ import { useState } from "react";
 import { NotePencilIcon } from "@phosphor-icons/react";
 import type { OrganizacaoByIdType, UsuarioType } from "types";
 import { FormUsuario } from "./form";
+import { getOrganizacao } from "utils";
 
 export const Usuario = () => {
   const ui = useUI();
@@ -19,7 +20,7 @@ export const Usuario = () => {
     options: {
       method: "GET",
       params: {
-        organizationId: "35332d7d-7015-4edb-8a3e-9add87fdfae9",
+        organizationId: getOrganizacao()?.id,
       },
     },
   });
