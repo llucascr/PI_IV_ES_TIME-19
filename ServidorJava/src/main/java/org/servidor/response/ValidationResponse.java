@@ -1,13 +1,13 @@
-package org.servidor.Response;
+package org.servidor.response;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class RespostaValidacao implements Comunicado {
+public class ValidationResponse implements Command {
 
     private boolean valido;
     private String mensagem;
 
-    public RespostaValidacao(boolean valido, String mensagem) {
+    public ValidationResponse(boolean valido, String mensagem) {
         this.valido = valido;
         this.mensagem = mensagem;
     }

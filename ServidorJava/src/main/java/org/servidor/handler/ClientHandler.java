@@ -1,4 +1,4 @@
-package org.servidor;
+package org.servidor.handler;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,54 +6,48 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.util.*;
 
-public class SupervisoraDeConexao extends Thread {
+public class ClientHandler extends Thread {
 
-    private Socket conexao;
-    private ArrayList<Parceiro> usuarios;
+    private Socket connection;
+    private ArrayList<SocketPeer> users;
 
-    public SupervisoraDeConexao(Socket conexao, ArrayList<Parceiro> usuarios) throws Exception {
-        if (conexao == null)
+    public ClientHandler(Socket connection, ArrayList<SocketPeer> users) throws Exception {
+        if (connection == null)
             throw new Exception("Conexao ausente");
-        if (usuarios == null)
+        if (users == null)
             throw new Exception("Usuarios ausentes");
 
-        this.conexao = conexao;
-        this.usuarios = usuarios;
+        this.connection = connection;
+        this.users = users;
     }
 
     @Override
     public void run() {
-        BufferedReader entrada = null;
-        PrintWriter saida = null;
+        BufferedReader input = null;
+        PrintWriter output = null;
 
         try {
             System.out.println("[SERVIDOR] Nova conexão de: " +
-                    conexao.getInetAddress().getHostAddress());
+                    connection.getInetAddress().getHostAddress());
 
             // Criar streams de String
-            entrada = new BufferedReader(
-                    new InputStreamReader(conexao.getInputStream())
-            );
-            saida = new PrintWriter(
-                    conexao.getOutputStream(), true
-            );
-
-            System.out.println("[SERVIDOR] Aguardando email...");
+            input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            output = new PrintWriter(connection.getOutputStream(), true);
 
             // Ler o email enviado
-            String email = entrada.readLine();
+            String email = input.readLine();
             System.out.println("[SERVIDOR] Email recebido: " + email);
 
             if (email != null && !email.isEmpty()) {
                 // Validar o email
                 boolean isValido = validarEmail(email);
-                System.out.println("[SERVIDOR] Email válido? " + isValido);
+                System.out.println("[SERVIDOR] Email válido: " + isValido);
 
                 // Enviar resposta (true ou false)
-                saida.println(isValido);
+                output.println(isValido);
                 System.out.println("[SERVIDOR] Resposta enviada: " + isValido);
             } else {
-                saida.println("false");
+                output.println("false");
             }
 
         } catch (Exception erro) {
@@ -61,9 +55,9 @@ public class SupervisoraDeConexao extends Thread {
             erro.printStackTrace();
         } finally {
             try {
-                if (entrada != null) entrada.close();
-                if (saida != null) saida.close();
-                if (!conexao.isClosed()) conexao.close();
+                if (input != null) input.close();
+                if (output != null) output.close();
+                if (!connection.isClosed()) connection.close();
                 System.out.println("[SERVIDOR] Conexão fechada");
             } catch (Exception e) {
                 e.printStackTrace();

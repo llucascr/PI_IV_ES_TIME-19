@@ -1,12 +1,12 @@
-package org.servidor.Request;
+package org.servidor.request;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class PedidoDeValidacaoEmail implements Comunicado {
+public class EmailValidationRequest implements Command {
 
     private String email;
 
-    public PedidoDeValidacaoEmail(String email) {
+    public EmailValidationRequest(String email) {
         this.email = email;
     }
 
