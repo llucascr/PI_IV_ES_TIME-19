@@ -1,6 +1,6 @@
 /**
  * Aplica uma máscara numérica ao valor informado.
- * 
+ *
  * @param value - String com dígitos (ex: "12345678901")
  * @param mask - Máscara no formato com 'x' para dígitos (ex: "xxx.xxx.xxx-xx")
  * @returns Valor formatado conforme máscara (ex: "123.456.789-01")
@@ -17,11 +17,16 @@ export function applyMask(value: string, mask: string): string {
         result += digits[digitIndex];
         digitIndex++;
       } else {
-        // Se acabou os dígitos, para ou coloca vazio?
-        break; // para aqui para não colocar placeholders incompletos
+        // Se não tiver mais dígitos, não adiciona nada, mas não coloca os caracteres fixos
+        break;
       }
     } else {
-      result += mask[i];
+      // Adiciona o caractere fixo apenas se houver dígito correspondente depois dele
+      if (digitIndex < digits.length) {
+        result += mask[i];
+      } else {
+        break;
+      }
     }
   }
 
