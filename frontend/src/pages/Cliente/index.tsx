@@ -70,6 +70,7 @@ export function Cliente() {
   return (
     <div className="flex h-full">
       {/* Coluna esquerda: lista de clientes */}
+      <div className="flex mt"></div>
       <div className="flex-1 p-5 overflow-y">
         <div className="">
           <div className="mb-5 flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200">
