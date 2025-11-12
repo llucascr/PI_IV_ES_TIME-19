@@ -1,6 +1,7 @@
 // src/pages/Cliente.tsx
 import { useMemo, useState } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
+import { Button } from "components";
 
 type Lote = {
   nome: string;
@@ -69,17 +70,22 @@ export function Cliente() {
   return (
     <div className="flex h-full">
       {/* Coluna esquerda: lista de clientes */}
-      <div className="flex-1 p-5 overflow-y-auto">
-        <div className="mb-5 flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200">
-          <MagnifyingGlass size={18} className="text-gray-400" />
-          <input
-            className="w-full bg-transparent text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
-            placeholder="Pesquisar cliente…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
+      <div className="flex mt"></div>
+      <div className="flex-1 p-5 overflow-y">
+        <div className="">
+          <div className="mb-5 flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200">
+            <MagnifyingGlass size={18} className="text-gray-400" />
+            <input
+              className="w-auto bg-transparent text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
+              placeholder="Pesquisar cliente…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+            <Button color="pink" title="Adicionar Cliente"/>
         </div>
 
+        
         <div className="space-y-3">
           {data.map((c) => (
             <div
