@@ -1,5 +1,9 @@
 package org.servidor.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.servidor.service.ClientService;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,9 +15,12 @@ public class ClientHandler extends Thread {
     private Socket connection;
     private ArrayList<SocketPeer> users;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ClientService clientService = new ClientService();
+
     public ClientHandler(Socket connection, ArrayList<SocketPeer> users) throws Exception {
         if (connection == null)
-            throw new Exception("Conexao ausente");
+            throw new Exception("Conexão ausente");
         if (users == null)
             throw new Exception("Usuarios ausentes");
 
@@ -27,27 +34,29 @@ public class ClientHandler extends Thread {
         PrintWriter output = null;
 
         try {
-            System.out.println("[SERVIDOR] Nova conexão de: " +
-                    connection.getInetAddress().getHostAddress());
+            System.out.println("[SERVIDOR] Nova conexão de: " + connection.getInetAddress().getHostAddress());
 
-            // Criar streams de String
             input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             output = new PrintWriter(connection.getOutputStream(), true);
 
-            // Ler o email enviado
-            String email = input.readLine();
-            System.out.println("[SERVIDOR] Email recebido: " + email);
+            // Ler requisição JSON
+            String jsonRequest = input.readLine();
+            System.out.println("[SERVIDOR] Requisição recebida: " + jsonRequest);
 
-            if (email != null && !email.isEmpty()) {
-                // Validar o email
-                boolean isValido = validarEmail(email);
-                System.out.println("[SERVIDOR] Email válido: " + isValido);
+            if (jsonRequest != null && !jsonRequest.isEmpty()) {
+                // Desserializar JSON
+                Map<String, Object> request = mapper.readValue(jsonRequest, Map.class);
 
-                // Enviar resposta (true ou false)
-                output.println(isValido);
-                System.out.println("[SERVIDOR] Resposta enviada: " + isValido);
+                String tipo = (String) request.get("tipo");
+                Object dados = request.get("dados");
+
+                // Rotear para operação apropriada
+                String resposta = rotearRequisicao(tipo, dados);
+
+                output.println(resposta);
+                System.out.println("[SERVIDOR] Resposta enviada: " + resposta);
             } else {
-                output.println("false");
+                output.println("{\"erro\":\"Requisição vazia\"}");
             }
 
         } catch (Exception erro) {
@@ -65,9 +74,21 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private boolean validarEmail(String email) {
-        // Validação simples de email
-        return email.contains("@") && email.contains(".");
+    private String rotearRequisicao(String tipo, Object dados) {
+        try {
+            switch(tipo) {
+                case "validarEmail":
+                    return clientService.validarEmail((String) dados);
+                case "validarCPF":
+                    return clientService.formatarCPF((String) dados);
+//                case "criptografarSenha":
+//                    return criptografarSenha((String) dados);
+                default:
+                    return "{\"erro\":\"Tipo de operação desconhecido\"}";
+            }
+        } catch (Exception e) {
+            return "{\"erro\":\"" + e.getMessage() + "\"}";
+        }
     }
 }
 
