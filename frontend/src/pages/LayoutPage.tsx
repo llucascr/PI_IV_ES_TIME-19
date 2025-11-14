@@ -39,13 +39,13 @@ export const LayoutPage = ({ children }: LayoutProps) => {
       <UIProvider>
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar Menu */}
-          <div className="w-70 flex flex-col border-r border-slate-200">
-            <div className="flex items-center gap-4 bg-white p-4 shadow-sm">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden border border-gray-300 bg-gray-200">
+          <div className="w-70 flex-col border-r border-slate-200">
+            <div className="p-4 flex items-center gap-4 bg-white shadow-sm">
+              <div className="max-w-15 h-15 rounded-full items-center justify-center overflow-hidden border border-gray-300 bg-gray-200">
                 {fotoPerfil ? (
                   <img
                     src={fotoPerfil}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover"  
                   />
                 ) : (
                   <img
