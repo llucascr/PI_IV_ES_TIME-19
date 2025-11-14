@@ -1,7 +1,9 @@
 // src/pages/Cliente.tsx
 import { useMemo, useState } from "react";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlass, PlusCircleIcon } from "@phosphor-icons/react";
 import { Button } from "components";
+import { useUI } from "context";
+import { FormCliente } from "./form";
 
 type Lote = {
   nome: string;
@@ -48,8 +50,14 @@ const MOCK: ClienteRow[] = [
 ];
 
 export function Cliente() {
+  const ui = useUI();
   const [q, setQ] = useState("");
   const [selecionado, setSelecionado] = useState<ClienteRow | null>(null);
+
+  // depois você pluga o fetch real aqui
+  const refetch = () => {
+    // ex: buscar clientes na API e atualizar estado
+  };
 
   const data = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -70,10 +78,9 @@ export function Cliente() {
   return (
     <div className="flex h-full">
       {/* Coluna esquerda: lista de clientes */}
-      <div className="flex mt"></div>
       <div className="flex-1 p-5 overflow-y">
-        <div className="">
-          <div className="mb-5 flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200">
+        <div className="col-span-2 mb-5 flex items-center justify-between gap-4">
+          <div className="flex flex-1 items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200 shadow-md h-10">
             <MagnifyingGlass size={18} className="text-gray-400" />
             <input
               className="w-auto bg-transparent text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
@@ -82,10 +89,32 @@ export function Cliente() {
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
-            <Button color="pink" title="Adicionar Cliente"/>
+
+          <Button
+            className="border-0 shadow-md h-10"
+            color="pink"
+            icon={<PlusCircleIcon />}
+            positionIcon="left"
+            title="Cliente"
+            onClick={() => {
+              ui.show({
+                id: "create-cliente",
+                content: (
+                  <FormCliente
+                    action="create"
+                    refetch={refetch}
+                  />
+                ),
+                type: "modal",
+                options: {
+                  titulo: "Cadastrar Cliente",
+                  position: "right",
+                },
+              });
+            }}
+          />
         </div>
 
-        
         <div className="space-y-3">
           {data.map((c) => (
             <div
@@ -115,8 +144,12 @@ export function Cliente() {
       <div className="w-1/3 bg-gray-800 rounded-lg text-white p-4">
         {selecionado ? (
           <>
-            <h2 className="text-lg font-semibold mb-3">{selecionado.nome}</h2>
-            <p className="text-sm text-gray-300 mb-5">{selecionado.email}</p>
+            <h2 className="text-lg font-semibold mb-3">
+              {selecionado.nome}
+            </h2>
+            <p className="text-sm text-gray-300 mb-5">
+              {selecionado.email}
+            </p>
             <h3 className="text-sm uppercase text-gray-400 mb-2">
               Lotes cadastrados:
             </h3>
