@@ -90,5 +90,27 @@ public class UserService {
         organizationRepository.save(organization);
         return modelMapper.map(userRepository.save(user), UserResponse.class);
     }
+    
+    public UserResponse disableUser(String id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFound("User with id " + id + " not found"));
+
+        if (user.getIdOrganization() == null) throw new UserNotInOrganization("User with id " + id + " not in organization");
+
+        Organization organization =  organizationRepository.findById(user.getIdOrganization())
+                        .orElseThrow(() -> new OrganizationNotFound("Organization with id " + user.getIdOrganization() + " not found"));
+
+        User organizationUser = organization.getEmployees().stream()
+                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow();
+
+        user.setActive(false);
+        userRepository.save(user);
+
+        organizationUser.setActive(false);
+        organizationRepository.save(organization);
+
+        return modelMapper.map(user, UserResponse.class);
+    }
 
 }
