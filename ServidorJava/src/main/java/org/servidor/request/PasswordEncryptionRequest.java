@@ -1,12 +1,12 @@
-package org.servidor.Request;
+package org.servidor.request;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class PedidoDeCriptografiaSenha implements Comunicado {
+public class PasswordEncryptionRequest implements Command {
 
     private String senha;
 
-    public PedidoDeCriptografiaSenha(String senha) {
+    public PasswordEncryptionRequest(String senha) {
         this.senha = senha;
     }
 

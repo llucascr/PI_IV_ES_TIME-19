@@ -1,12 +1,12 @@
-package org.servidor.Request;
+package org.servidor.request;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class PedidoDeFormatacaoCPF implements Comunicado {
+public class CPFFormatRequest implements Command {
 
     private String cpf;
 
-    public PedidoDeFormatacaoCPF(String cpf) {
+    public CPFFormatRequest(String cpf) {
         this.cpf = cpf;
     }
 

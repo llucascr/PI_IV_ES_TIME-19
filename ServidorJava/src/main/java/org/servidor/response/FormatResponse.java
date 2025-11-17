@@ -1,13 +1,13 @@
-package org.servidor.Response;
+package org.servidor.response;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class RespostaFormatacao implements Comunicado {
+public class FormatResponse implements Command {
 
     private String dado;
     private String tipo;
 
-    public RespostaFormatacao(String dado, String tipo) {
+    public FormatResponse(String dado, String tipo) {
         this.dado = dado;
         this.tipo = tipo;
     }

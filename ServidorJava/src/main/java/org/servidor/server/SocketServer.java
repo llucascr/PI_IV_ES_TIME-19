@@ -1,8 +1,12 @@
-package org.servidor;
+package org.servidor.server;
+
+import org.servidor.handler.ConnectionAcceptor;
+import org.servidor.response.ShutdownResponse;
+import org.servidor.handler.SocketPeer;
 
 import java.util.*;
 
-public class Servidor {
+public class SocketServer {
 
     public static String PORTA_PADRAO = "3000";
 
@@ -13,16 +17,16 @@ public class Servidor {
             return;
         }
 
-        String porta = Servidor.PORTA_PADRAO;
+        String porta = SocketServer.PORTA_PADRAO;
         if (args.length == 1)
             porta = args[0];
 
-        ArrayList<Parceiro> usuarios = new ArrayList<>();
+        ArrayList<SocketPeer> usuarios = new ArrayList<>();
 
-        AceitadoraDeConexao aceitadoraDeConexao = null;
+        ConnectionAcceptor connectionAcceptor = null;
         try {
-            aceitadoraDeConexao = new AceitadoraDeConexao(porta, usuarios);
-            aceitadoraDeConexao.start();
+            connectionAcceptor = new ConnectionAcceptor(porta, usuarios);
+            connectionAcceptor.start();
         } catch (Exception erro) {
             System.err.println("Escolha uma porta apropriada e liberada para uso!\n");
             return;
@@ -35,18 +39,18 @@ public class Servidor {
 
             String comando = null;
             try {
-                comando = Teclado.getUmString();
+                comando = ConsoleInput.getUmString();
             } catch (Exception erro) {
             }
 
             if (comando != null && comando.toLowerCase().equals("desativar")) {
                 synchronized (usuarios) {
-                    ComunicadoDeDesligamento comunicadoDeDesligamento =
-                            new ComunicadoDeDesligamento();
-                    for (Parceiro usuario : usuarios) {
+                    ShutdownResponse shutdownResponse =
+                            new ShutdownResponse();
+                    for (SocketPeer usuario : usuarios) {
                         try {
-                            usuario.receba(comunicadoDeDesligamento);
-                            usuario.adeus();
+                            usuario.send(shutdownResponse);
+                            usuario.disconnect();
                         } catch (Exception erro) {
                         }
                     }

@@ -1,12 +1,12 @@
-package org.servidor.Request;
+package org.servidor.request;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class PedidoDeFormatacaoCNPJ implements Comunicado {
+public class CNPJFormatRequest implements Command {
 
     private String cnpj;
 
-    public PedidoDeFormatacaoCNPJ(String cnpj) {
+    public CNPJFormatRequest(String cnpj) {
         this.cnpj = cnpj;
     }
 

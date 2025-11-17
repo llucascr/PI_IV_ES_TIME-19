@@ -1,13 +1,10 @@
-package org.servidor;
+package org.servidor.server;
 
 import java.io.*;
 
-import java.io.*;
+public class ConsoleInput {
 
-public class Teclado {
-
-    private static BufferedReader teclado =
-            new BufferedReader(new InputStreamReader(System.in));
+    private static BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 
     public static String getUmString() {
         String ret = null;
