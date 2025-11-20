@@ -16,9 +16,12 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findById(@NonNull String id);
 
     @Query("{'email': ?0}")
-    Optional<User> OpFindByEmail(String email);
+    Optional<User> opFindByEmail(String email);
 
     @Query("{'email': ?0}")
     UserDetails findByEmail(String email);
+
+    @Query("{'cpf':  ?0}")
+    Optional<User> findByCpf(String cpf);
 
 }

@@ -3,6 +3,7 @@ package com.puc.PI4.Software.Morango.api;
 import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationRequest;
 import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.EmailResponse;
+import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -42,7 +44,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
+
         if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
+
+        if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
 
         String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
         User user = User.builder()
