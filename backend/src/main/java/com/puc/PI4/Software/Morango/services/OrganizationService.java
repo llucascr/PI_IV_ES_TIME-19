@@ -56,7 +56,7 @@ public class OrganizationService {
 
     public InsertIntoOrganizationResponse insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {
 
-        User user = userRepository.OpFindByEmail(employeeEmail).orElseThrow(
+        User user = userRepository.opFindByEmail(employeeEmail).orElseThrow(
                 () -> new UserNotFound("User with email " + employeeEmail + " not found"));
 
         Organization organization = organizationRepository.findByCnpj(organizationCnpj).orElseThrow(

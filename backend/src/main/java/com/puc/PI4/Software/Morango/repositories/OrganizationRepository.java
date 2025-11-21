@@ -16,7 +16,7 @@ public interface OrganizationRepository extends MongoRepository<Organization, St
     @NonNull
     @Query("{id: ?0}")
     @Override
-    Optional<Organization> findById(@NonNull String s);
+    Optional<Organization> findById(@NonNull String id);
 
     @Query("{}")
     Page<Organization> findByName(@Param("userName") String userName, Pageable pageable);
