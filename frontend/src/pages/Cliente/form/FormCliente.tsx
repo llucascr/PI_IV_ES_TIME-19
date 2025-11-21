@@ -6,6 +6,9 @@ import { useState } from "react";
 import type { ClienteType } from "types";
 import { apiFetch } from "utils";
 
+// MESMO ORG_ID da tela Cliente.tsx
+const ORG_ID = "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e";
+
 export const FormCliente = ({
   action,
   refetch,
@@ -25,7 +28,7 @@ export const FormCliente = ({
   async function onSave(e: any) {
     e.preventDefault();
 
-    const { error } = await apiFetch({
+    const res: any = await apiFetch({
       url: config.apiUrl + "/client/" + action,
       options: {
         method: action === "create" ? "POST" : "PUT",
@@ -35,10 +38,10 @@ export const FormCliente = ({
         params: cliente
           ? {
               clientId: cliente.id,
-              idOrganization: "ca0dbdf9-bade-4603-8248-81e1eeff0506",
+              idOrganization: ORG_ID,
             }
           : {
-              idOrganization: "ca0dbdf9-bade-4603-8248-81e1eeff0506",
+              idOrganization: ORG_ID,
             },
         data: {
           name: nome,
@@ -49,9 +52,10 @@ export const FormCliente = ({
       },
     });
 
-    if (error) {
+    if (res.error) {
       setError(true);
     } else {
+      setError(false);
       refetch();
       ui.hide("modal", `${action}-cliente`);
     }
@@ -109,7 +113,8 @@ export const FormCliente = ({
 
       <div className="flex justify-end gap-2">
         <Button
-          color="yellow"
+          className="border-0"
+          color="pink" 
           title="Cancelar"
           type="button"
           onClick={() => ui.hide("modal", `${action}-cliente`)}

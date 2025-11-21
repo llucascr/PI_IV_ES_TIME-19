@@ -1,13 +1,15 @@
 // src/pages/Cliente.tsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MagnifyingGlass, PlusCircleIcon } from "@phosphor-icons/react";
 import { Button } from "components";
 import { useUI } from "context";
 import { FormCliente } from "./form";
+import { apiFetch } from "utils";
+import { config } from "config";
 
 type Lote = {
   nome: string;
-  areaKm2: number; // área do lote em km²
+  areaKm2: number;
 };
 
 type ClienteRow = {
@@ -18,67 +20,110 @@ type ClienteRow = {
   lotes?: Lote[];
 };
 
-const MOCK: ClienteRow[] = [
-  {
-    id: "CL-001",
-    nome: "Ana Souza",
-    email: "ana@example.com",
-    status: "Ativo",
-    lotes: [
-      { nome: "Lote 01", areaKm2: 0.42 },
-      { nome: "Lote 02", areaKm2: 1.1 },
-      { nome: "Lote 03", areaKm2: 0.05 },
-    ],
-  },
-  {
-    id: "CL-002",
-    nome: "Bruno Lima",
-    email: "bruno@example.com",
-    status: "Ativo",
-    lotes: [
-      { nome: "Lote 1", areaKm2: 0.88 },
-      { nome: "Lote 2", areaKm2: 0.37 },
-    ],
-  },
-  {
-    id: "CL-003",
-    nome: "Carla Paiva",
-    email: "carla@example.com",
-    status: "Inativo",
-    lotes: [{ nome: "Lote 1", areaKm2: 2.5 }],
-  },
-];
+const ORG_ID = "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e";
 
 export function Cliente() {
   const ui = useUI();
   const [q, setQ] = useState("");
+  const [clientes, setClientes] = useState<ClienteRow[]>([]);
   const [selecionado, setSelecionado] = useState<ClienteRow | null>(null);
+  const [loadingLotes, setLoadingLotes] = useState(false);
 
-  // depois você pluga o fetch real aqui
+  async function loadClientes() {
+    const res: any = await apiFetch({
+      url: config.apiUrl + "/client/listByOrg",
+      options: {
+        method: "GET",
+        params: {
+          idOrganization: ORG_ID,
+          active: true,
+          page: 0,
+          size: 10,
+        },
+      },
+    });
+
+    const data = res.data;
+    const error = res.error;
+
+    if (!error && Array.isArray(data)) {
+      const rows: ClienteRow[] = data.map((c: any) => ({
+        id: c.id,
+        nome: c.name,
+        email: c.email,
+        status: c.active ? "Ativo" : "Inativo",
+      }));
+      setClientes(rows);
+    }
+  }
+
+  useEffect(() => {
+    loadClientes();
+  }, []);
+
   const refetch = () => {
-    // ex: buscar clientes na API e atualizar estado
+    loadClientes();
   };
 
   const data = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return MOCK;
-    return MOCK.filter(
+    const base = clientes;
+    if (!s) return base;
+
+    return base.filter(
       (c) =>
         c.nome.toLowerCase().includes(s) ||
         c.email.toLowerCase().includes(s) ||
         c.id.toLowerCase().includes(s)
     );
-  }, [q]);
+  }, [q, clientes]);
 
   const fmt = new Intl.NumberFormat("pt-BR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
+  async function handleSelectCliente(cliente: ClienteRow) {
+    setSelecionado({ ...cliente, lotes: undefined });
+    setLoadingLotes(true);
+
+    const res: any = await apiFetch({
+      url: config.apiUrl + "/batch/listByOrgClient",
+      options: {
+        method: "GET",
+        params: {
+          clientId: cliente.id,
+          organizationId: ORG_ID,
+          page: 0,
+          numberOfBatches: 10,
+        },
+      },
+    });
+
+    const data = res.data;
+    const error = res.error;
+
+    if (!error) {
+      const arrayData = Array.isArray(data) ? data : [];
+
+      const lotes: Lote[] = arrayData.map((b: any) => ({
+        nome: b.name ?? b.nome ?? `Lote ${b.id ?? ""}`,
+        areaKm2: b.areaKm2 ?? b.area ?? 0,
+      }));
+
+      setSelecionado((prev) =>
+        prev && prev.id === cliente.id ? { ...prev, lotes } : prev
+      );
+    }
+
+    setLoadingLotes(false);
+  }
+
   return (
-    <div className="flex h-full">
-      {/* Coluna esquerda: lista de clientes */}
-      <div className="flex-1 p-5 overflow-y">
+    // raiz ocupa 100% da altura do card branco e esconde overflow geral
+    <div className="flex h-full overflow-hidden">
+      {/* Coluna esquerda: lista de clientes com scroll próprio */}
+      <div className="flex-1 p-5 overflow-y-auto">
         <div className="col-span-2 mb-5 flex items-center justify-between gap-4">
           <div className="flex flex-1 items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 ring-1 ring-gray-200 shadow-md h-10">
             <MagnifyingGlass size={18} className="text-gray-400" />
@@ -130,7 +175,7 @@ export function Cliente() {
                 <p className="truncate text-xs text-gray-600">{c.email}</p>
               </div>
               <button
-                onClick={() => setSelecionado(c)}
+                onClick={() => handleSelectCliente(c)}
                 className="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-white"
               >
                 Detalhes
@@ -140,8 +185,8 @@ export function Cliente() {
         </div>
       </div>
 
-      {/* Coluna direita: detalhes e lotes */}
-      <div className="w-1/3 bg-gray-800 rounded-lg text-white p-4">
+      {/* Coluna direita: mesma altura do card, com scroll interno */}
+      <div className="w-1/3 bg-gray-800 rounded-lg text-white p-4 h-full overflow-y-auto">
         {selecionado ? (
           <>
             <h2 className="text-lg font-semibold mb-3">
@@ -153,19 +198,32 @@ export function Cliente() {
             <h3 className="text-sm uppercase text-gray-400 mb-2">
               Lotes cadastrados:
             </h3>
-            <div className="space-y-2">
-              {selecionado.lotes?.map((lote, i) => (
-                <div
-                  key={i}
-                  className="rounded-md bg-gray-700 px-3 py-2 text-sm flex items-center justify-between"
-                >
-                  <span>{lote.nome}</span>
-                  <span className="text-gray-300">
-                    {fmt.format(lote.areaKm2)} km²
-                  </span>
-                </div>
-              ))}
-            </div>
+
+            {loadingLotes ? (
+              <div className="text-gray-400 text-xs italic">
+                Carregando lotes...
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {selecionado.lotes?.map((lote, i) => (
+                  <div
+                    key={i}
+                    className="rounded-md bg-gray-700 px-3 py-2 text-sm flex items-center justify-between"
+                  >
+                    <span>{lote.nome}</span>
+                    <span className="text-gray-300">
+                      {fmt.format(lote.areaKm2)} km²
+                    </span>
+                  </div>
+                ))}
+
+                {!selecionado.lotes?.length && (
+                  <div className="text-gray-400 text-xs italic">
+                    Nenhum lote encontrado para este cliente.
+                  </div>
+                )}
+              </div>
+            )}
           </>
         ) : (
           <div className="text-gray-400 text-sm italic">
