@@ -5,3 +5,4 @@ export * from "./praga";
 export * from "./usuario";
 export * from "./cliente"
 export * from "./monitoramento";
+export * from "./lote";
