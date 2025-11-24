@@ -1,4 +1,4 @@
-package org.servidor.request;
+package org.servidor.utility;
 
 import org.servidor.model.Command;
 

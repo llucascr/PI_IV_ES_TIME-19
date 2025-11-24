@@ -2,6 +2,7 @@ package org.servidor.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.servidor.utility.EmailValidation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 public class ClientService {
 
     public String validarEmail(String email) throws JsonProcessingException {
-        boolean isValido = email.contains("@") && email.contains(".");
+        boolean isValido = EmailValidation.isValid(email);
         Map<String, Object> response = new HashMap<>();
         response.put("tipo", "validarEmail");
         response.put("valido", isValido);
