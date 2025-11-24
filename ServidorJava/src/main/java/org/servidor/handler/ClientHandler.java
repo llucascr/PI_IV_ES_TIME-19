@@ -82,6 +82,8 @@ public class ClientHandler extends Thread {
                     return clientService.validarEmail((String) dados);
                 case "validarCPF":
                     return clientService.formatarCPF((String) dados);
+                case "formatarCNPJ":
+                    return clientService.formatarCNPJ((String) dados);
 
                 default:
                     return "{\"erro\":\"Tipo de operação desconhecido\"}";

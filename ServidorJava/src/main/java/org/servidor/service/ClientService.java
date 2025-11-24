@@ -3,6 +3,7 @@ package org.servidor.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servidor.utility.EmailValidation;
+import org.servidor.utility.CNPJFormat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,18 @@ public class ClientService {
         Map<String, Object> response = new HashMap<>();
         response.put("tipo", "validarEmail");
         response.put("valido", isValido);
+        return new ObjectMapper().writeValueAsString(response);
+    }
+
+    public String formatarCNPJ(String cnpj) throws JsonProcessingException {
+        boolean isValido = CNPJFormat.isValid(cnpj);
+        String resposta = "-1";
+        if (isValido) {
+            resposta = CNPJFormat.formatarCNPJ(cnpj);
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("tipo", "formatarCNPJ");
+        response.put("formatado", resposta);
         return new ObjectMapper().writeValueAsString(response);
     }
 
