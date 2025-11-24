@@ -1,12 +1,12 @@
-package org.servidor.request;
+package org.servidor.utility;
 
 import org.servidor.model.Command;
 
-public class CNPJFormatRequest implements Command {
+public class CNPJFormat implements Command {
 
     private String cnpj;
 
-    public CNPJFormatRequest(String cnpj) {
+    public CNPJFormat(String cnpj) {
         this.cnpj = cnpj;
     }
 
