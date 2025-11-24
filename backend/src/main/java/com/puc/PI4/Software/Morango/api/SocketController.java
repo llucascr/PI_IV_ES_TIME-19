@@ -45,6 +45,33 @@ public class SocketController {
         }
     }
 
+    @PostMapping("/formatarCNPJ")
+    public ResponseEntity<String> formatarCNPJ(@RequestParam String cnpj) {
+        try (Socket socket = new Socket("localhost", PORTA_PADRAO)) {
+
+            // Criar request com tipo identificador
+            Map<String, Object> request = new HashMap<>();
+            request.put("tipo", "formatarCNPJ");
+            request.put("dados", cnpj);
+
+            // Serializar para JSON
+            String jsonRequest = mapper.writeValueAsString(request);
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Enviar requisição
+            out.println(jsonRequest);
+
+            // Receber resposta
+            return ResponseEntity.ok(in.readLine());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("{\"erro\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
     @PostMapping("/formatarCpf")
     public ResponseEntity<String> formatarCpf(@RequestParam String cpf) {
         try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
