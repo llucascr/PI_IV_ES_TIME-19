@@ -8,13 +8,35 @@ import {
   Monitoramento,
   Usuario,
 } from "pages";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
+import { getAuthToken } from "../utils/auth";
+
+function isTokenExpired(token: string): boolean {
+  try {
+    const [, payload] = token.split(".");
+    const decoded = JSON.parse(atob(payload));
+    if (!decoded.exp) return false;
+    const now = Date.now() / 1000;
+    return decoded.exp < now;
+  } catch {
+    return true;
+  }
+}
 
 export const Router = createBrowserRouter([
   {
     id: "root",
     path: "/",
     Component: LayoutPage,
+     loader: () => {
+      const token = getAuthToken();
+
+      if (!token || isTokenExpired(token)) {
+        throw redirect("/login");
+      }
+
+      return null;
+    },
     children: [
       {
         path: "/",

@@ -6,3 +6,4 @@ export * from "./usuario";
 export * from "./cliente"
 export * from "./monitoramento";
 export * from "./lote";
+export * from "./login";
