@@ -3,6 +3,7 @@ package com.puc.PI4.Software.Morango.api;
 import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationRequest;
 import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.EmailResponse;
+import com.puc.PI4.Software.Morango.dto.request.user.LoginResponse;
 import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.User;
@@ -33,13 +34,19 @@ public class AuthenticationController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationRequest data) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid AuthenticationRequest data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
 
-        return ResponseEntity.ok(new EmailResponse(token));
+        var response = new LoginResponse(
+                token,
+                user.getName()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
