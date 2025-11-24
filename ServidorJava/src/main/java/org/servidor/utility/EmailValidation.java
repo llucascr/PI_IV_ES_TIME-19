@@ -1,17 +1,17 @@
-package org.servidor.request;
+package org.servidor.utility;
 
 import org.servidor.model.Command;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EmailValidationRequest implements Command {
+public class EmailValidation implements Command {
 
     private String email;
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
 
-    public EmailValidationRequest(String email) {
+    public EmailValidation(String email) {
         this.email = email;
     }
 

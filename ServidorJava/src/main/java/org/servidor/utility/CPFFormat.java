@@ -1,12 +1,12 @@
-package org.servidor.request;
+package org.servidor.utility;
 
 import org.servidor.model.Command;
 
-public class CPFFormatRequest implements Command {
+public class CPFFormat implements Command {
 
     private String cpf;
 
-    public CPFFormatRequest(String cpf) {
+    public CPFFormat(String cpf) {
         this.cpf = cpf;
     }
 

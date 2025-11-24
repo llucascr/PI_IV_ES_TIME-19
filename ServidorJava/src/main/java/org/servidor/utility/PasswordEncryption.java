@@ -1,12 +1,12 @@
-package org.servidor.request;
+package org.servidor.utility;
 
 import org.servidor.model.Command;
 
-public class PasswordEncryptionRequest implements Command {
+public class PasswordEncryption implements Command {
 
     private String senha;
 
-    public PasswordEncryptionRequest(String senha) {
+    public PasswordEncryption(String senha) {
         this.senha = senha;
     }
 

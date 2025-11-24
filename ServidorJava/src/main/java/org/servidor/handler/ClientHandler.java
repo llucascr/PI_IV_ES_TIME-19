@@ -3,6 +3,7 @@ package org.servidor.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servidor.service.ClientService;
+import org.servidor.utility.EmailValidation;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -81,8 +82,7 @@ public class ClientHandler extends Thread {
                     return clientService.validarEmail((String) dados);
                 case "validarCPF":
                     return clientService.formatarCPF((String) dados);
-//                case "criptografarSenha":
-//                    return criptografarSenha((String) dados);
+
                 default:
                     return "{\"erro\":\"Tipo de operação desconhecido\"}";
             }
