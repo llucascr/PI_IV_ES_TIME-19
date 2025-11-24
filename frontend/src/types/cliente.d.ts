@@ -4,4 +4,5 @@ export type ClienteType = {
     email: string
     adress: string
     phonenumber: string
+    active: boolean;
 }
