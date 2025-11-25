@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { NotificationProvider, UIProvider } from "context";
 import {
   House,
@@ -7,8 +7,11 @@ import {
   ClipboardText,
   Globe,
   Farm,
+  SignOut,
 } from "@phosphor-icons/react";
 import { getOrganizacao } from "utils";
+import { useCookie } from "hooks";
+import { config } from "config";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -18,6 +21,10 @@ export const LayoutPage = ({ children }: LayoutProps) => {
   const navItemStyle = ({ isActive }: any) =>
     `rounded-lg px-3 py-1.5 text-lg text-gray-700 hover:bg-[#ffc6c6] flex items-center gap-2
   ${isActive ? "bg-[#ffc6c6]  " : "bg-white"}`;
+
+  const { setCookie } = useCookie();
+  const navigate = useNavigate();
+
 
   //foto de perfil do usuario
   const fotoPerfil =
@@ -29,19 +36,25 @@ export const LayoutPage = ({ children }: LayoutProps) => {
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
   //nome do usuário
-  const nomeUser = "Fillipe Faria";
+  const nomeUser = localStorage.getItem("safratechUserName") || "Usuário";
 
   //nome da organização
   const nomeOrg = getOrganizacao()?.name;
+
+  function handleLogout() {
+    setCookie(config.tokenCookieNome, "", -1);
+    localStorage.removeItem("organizacaoSafratech");
+    navigate("/login");
+  }
 
   return (
     <NotificationProvider>
       <UIProvider>
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar Menu */}
-          <div className="w-70 flex flex-col border-r border-slate-200">
-            <div className="flex items-center gap-4 bg-white p-4 shadow-sm">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden border border-gray-300 bg-gray-200">
+          <div className="w-70 flex-col border-r border-slate-200">
+            <div className="p-4 flex items-center gap-4 bg-white shadow-sm">
+              <div className="max-w-15 h-15 rounded-full items-center justify-center overflow-hidden border border-gray-300 bg-gray-200">
                 {fotoPerfil ? (
                   <img
                     src={fotoPerfil}
@@ -89,8 +102,22 @@ export const LayoutPage = ({ children }: LayoutProps) => {
                 Clientes
               </NavLink>
             </nav>
-          </div>
 
+            <hr className="border-gray-300 mt-5" />
+
+            <div className="mt-auto px-4 pb-4 pt-3">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md px-2 py-1.5 transition"
+              >
+                <SignOut size={18} />
+                <span>Sair</span>
+              </button>
+            </div>
+
+          </div>
+          
           <main className="flex-1 h-full w-full p-4 bg-[#E0E0E0] overflow-auto">
             <div className="bg-white rounded-lg shadow-sm h-full">
               {children}

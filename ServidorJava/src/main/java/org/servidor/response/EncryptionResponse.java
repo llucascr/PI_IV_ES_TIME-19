@@ -1,12 +1,12 @@
-package org.servidor.Response;
+package org.servidor.response;
 
-import org.servidor.Comunicado;
+import org.servidor.model.Command;
 
-public class RespostaCriptografia implements Comunicado {
+public class EncryptionResponse implements Command {
 
     private String senhaCriptografada;
 
-    public RespostaCriptografia(String senhaCriptografada) {
+    public EncryptionResponse(String senhaCriptografada) {
         this.senhaCriptografada = senhaCriptografada;
     }
 

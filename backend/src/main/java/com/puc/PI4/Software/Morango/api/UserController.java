@@ -3,6 +3,7 @@ package com.puc.PI4.Software.Morango.api;
 import com.puc.PI4.Software.Morango.dto.request.user.UserRequest;
 import com.puc.PI4.Software.Morango.dto.response.organization.UserAndOrganizationResponse;
 import com.puc.PI4.Software.Morango.dto.response.user.UserResponse;
+import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,11 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@RequestParam String userId, @RequestBody UserRequest userRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userId, userRequest));
+    }
+
+    @PatchMapping("/disabled")
+    public ResponseEntity<UserResponse> disableUser(@RequestParam String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.disableUser(userId));
     }
 
 }

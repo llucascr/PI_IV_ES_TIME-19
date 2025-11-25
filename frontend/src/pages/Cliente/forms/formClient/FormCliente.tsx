@@ -1,3 +1,4 @@
+// src/pages/Cliente/form.tsx
 import { Button, Input } from "components";
 import { config } from "config";
 import { useUI } from "context";
@@ -21,7 +22,6 @@ export const FormCliente = ({
   const [endereco, setEndereco] = useState<string>(cliente?.adress || "");
   const [telefone, setTelefone] = useState<string>(cliente?.phonenumber || "");
 
-
   async function onSave(e: any) {
     e.preventDefault();
 
@@ -32,12 +32,19 @@ export const FormCliente = ({
         headers: {
           "Content-Type": "application/json",
         },
-        params: cliente ? { clientId: cliente.id, idOrganization: "ca0dbdf9-bade-4603-8248-81e1eeff0506" } : {idOrganization: "ca0dbdf9-bade-4603-8248-81e1eeff0506"},
+        params: cliente
+          ? {
+              clientId: cliente.id,
+              idOrganization: "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e",
+            }
+          : {
+              idOrganization: "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e",
+            },
         data: {
           name: nome,
           email: email,
           adress: endereco,
-          phoneNumber: telefone, 
+          phoneNumber: telefone,
         },
       },
     });
@@ -46,7 +53,6 @@ export const FormCliente = ({
       setError(true);
     } else {
       refetch();
-
       ui.hide("modal", `${action}-cliente`);
     }
   }
@@ -96,10 +102,9 @@ export const FormCliente = ({
         value={telefone}
         onChange={(e) => setTelefone(e.target.value)}
       />
-      
 
       {error && (
-        <p className="text-red-500">Não foi possível salvar o cliete.</p>
+        <p className="text-red-500">Não foi possível salvar o cliente.</p>
       )}
 
       <div className="flex justify-end gap-2">

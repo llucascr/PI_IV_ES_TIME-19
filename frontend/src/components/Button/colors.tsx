@@ -82,7 +82,7 @@ export const COLORS = {
   pink: {
     solid: {
       bg: "bg-[#ffc6c6]",
-      hover: "hover:bg-pink-600 hover:text-white",
+      hover: "hover:bg-rose-300 hover:text-black",
       text: "text-black",
       border: "",
     },

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -33,6 +34,7 @@ public class UserService {
 
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final OrganizationRepository organizationRepository;
 
     public UserResponse listUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -55,21 +57,60 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFound("User with email " + userRequest.getEmail() + " not found"));
 
-        User userUpdated = User.builder()
-                ._id(user.get_id())
-                .id(user.getId())
-                .name(userRequest.getName() != null ? userRequest.getName() : user.getName())
-                .email(userRequest.getEmail() != null ? userRequest.getEmail() : user.getEmail())
-                .password(userRequest.getPassword() != null
-                        ? new BCryptPasswordEncoder().encode(userRequest.getPassword())
-                        : user.getPassword())
-                .cpf(userRequest.getCpf() != null ?  userRequest.getCpf() : user.getCpf())
-                .createAt(user.getCreateAt())
-                .updateAt(LocalDateTime.now())
-                .active(user.getActive())
-                .build();
+        if (user.getActive() == false) throw new UserIsNotActive("User with id " +  userId + " is not active");
 
-        return modelMapper.map(userRepository.save(userUpdated), UserResponse.class);
+        Organization organization = organizationRepository.findById(user.getIdOrganization())
+                .orElseThrow(() -> new OrganizationNotFound("Organization with id " + user.getIdOrganization() + " not found"));
+
+        User organizationUser = organization.getEmployees().stream()
+                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow();
+
+        if (userRequest.getName() != null) {
+            user.setName(userRequest.getName());
+            organizationUser.setName(userRequest.getName());
+        }
+
+        if (userRequest.getEmail() != null) {
+            user.setEmail(userRequest.getEmail());
+            organizationUser.setEmail(userRequest.getEmail());
+        }
+
+        if (userRequest.getPassword() != null) {
+            String password = new BCryptPasswordEncoder().encode(userRequest.getPassword());
+            user.setPassword(password);
+            organizationUser.setPassword(password);
+        }
+
+        if (userRequest.getCpf() != null) {
+            user.setCpf(userRequest.getCpf());
+            organizationUser.setCpf(userRequest.getCpf());
+        }
+
+        user.setUpdateAt(LocalDateTime.now());
+        organizationRepository.save(organization);
+        return modelMapper.map(userRepository.save(user), UserResponse.class);
+    }
+    
+    public UserResponse disableUser(String id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFound("User with id " + id + " not found"));
+
+        if (user.getIdOrganization() == null) throw new UserNotInOrganization("User with id " + id + " not in organization");
+
+        Organization organization =  organizationRepository.findById(user.getIdOrganization())
+                        .orElseThrow(() -> new OrganizationNotFound("Organization with id " + user.getIdOrganization() + " not found"));
+
+        User organizationUser = organization.getEmployees().stream()
+                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow();
+
+        user.setActive(false);
+        userRepository.save(user);
+
+        organizationUser.setActive(false);
+        organizationRepository.save(organization);
+
+        return modelMapper.map(user, UserResponse.class);
     }
 
 }
