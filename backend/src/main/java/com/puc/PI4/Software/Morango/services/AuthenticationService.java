@@ -1,0 +1,91 @@
+package com.puc.PI4.Software.Morango.services;
+
+import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationRequest;
+import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
+import com.puc.PI4.Software.Morango.dto.request.user.LoginResponse;
+import com.puc.PI4.Software.Morango.dto.response.organization.InsertIntoOrganizationResponse;
+import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotActive;
+import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
+import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
+import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
+import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
+import com.puc.PI4.Software.Morango.infra.security.TokenService;
+import com.puc.PI4.Software.Morango.models.Organization;
+import com.puc.PI4.Software.Morango.models.User;
+import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
+import com.puc.PI4.Software.Morango.repositories.UserRepository;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@RequiredArgsConstructor
+@Service
+public class AuthenticationService {
+
+    private final UserRepository userRepository;
+    private final OrganizationRepository organizationRepository;
+
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+
+    public LoginResponse login(AuthenticationRequest data) {
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+
+        var user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
+
+        return new LoginResponse(token, user.getName());
+    }
+
+    public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
+        if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
+
+        if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
+
+        String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+        User user = User.builder()
+                .id(UUID.randomUUID().toString())
+                .name(data.getName())
+                .email(data.getEmail())
+                .password(ecryptedPassword)
+                .cpf(data.getCpf())
+                .createAt(LocalDateTime.now())
+                .active(true)
+                .role(data.getRole())
+                .build();
+
+        userRepository.save(user);
+        insertUserIntoOrganization(user.getEmail(), data.getOrganizationCnpj());
+
+        return ResponseEntity.ok().build();
+    }
+
+    private void insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {
+
+        User user = userRepository.opFindByEmail(employeeEmail).orElseThrow(
+                () -> new UserNotFound("User with email " + employeeEmail + " not found"));
+
+        Organization organization = organizationRepository.findByCnpj(organizationCnpj).orElseThrow(
+                () ->  new OrganizationNotFound("Organization with cnpj " + organizationCnpj + " not found"));
+
+        if (organization.getActive() == false) {
+            throw new OrganizationIsNotActive("Organization with CNPJ " + organizationCnpj + " is not active");
+        }
+
+        user.setIdOrganization(organization.getId());
+        organization.setEmployees(user);
+
+        userRepository.save(user);
+        organizationRepository.save(organization);
+    }
+
+}

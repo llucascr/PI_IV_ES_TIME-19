@@ -24,4 +24,7 @@ public class RegisterResquest {
 
     @NonNull
     private UserRole role;
+
+    @NotBlank(message = "Required Organization CNPJ")
+    private String organizationCnpj;
 }

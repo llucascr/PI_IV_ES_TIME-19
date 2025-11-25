@@ -24,13 +24,13 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(organizationService.createOrganization(organizationRequest));
     }
 
-    @PostMapping("/insertEmployee")
-    public ResponseEntity<InsertIntoOrganizationResponse> insertUserIntoOrganization(@RequestParam String employeeEmail
-            , @RequestParam String organizationCnpj)
-    {
-        return ResponseEntity.status(HttpStatus.CREATED).body(organizationService.insertUserIntoOrganization
-                (employeeEmail, organizationCnpj));
-    }
+//    @PostMapping("/insertEmployee")
+//    public ResponseEntity<InsertIntoOrganizationResponse> insertUserIntoOrganization(@RequestParam String employeeEmail
+//            , @RequestParam String organizationCnpj)
+//    {
+//        return ResponseEntity.status(HttpStatus.CREATED).body(organizationService.insertUserIntoOrganization
+//                (employeeEmail, organizationCnpj));
+//    }
 
     @GetMapping("/listById")
     public ResponseEntity<OrganizationResponse> listOrganizationById(@RequestParam String organizationId) {
