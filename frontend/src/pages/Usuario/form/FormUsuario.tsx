@@ -119,7 +119,7 @@ export const FormUsuario = ({
           color="yellow"
           title="Cancelar"
           type="button"
-          onClick={() => ui.hide("modal", `${action}-praga`)}
+          onClick={() => ui.hide("modal", `${action}-usuario`)}
         />
         <Button
           color="green"
