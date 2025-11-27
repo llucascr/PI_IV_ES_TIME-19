@@ -19,8 +19,8 @@ public class RecordController {
     private final RecordService recordService;
 
     @PostMapping("/create")
-    public ResponseEntity<RecordResponse> createRecord(@RequestBody @Valid RecordRequest recordRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(recordService.createRecord(recordRequest));
+    public ResponseEntity<RecordResponse> createRecord(@RequestParam String pragueId, @RequestBody @Valid RecordRequest recordRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(recordService.createRecord(recordRequest, pragueId));
     }
 
     @GetMapping("/list")
