@@ -19,7 +19,6 @@ public class ClientHandler extends Thread {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final ClientService clientService = new ClientService();
-    private final PasswordEncryption passwordEncryption = new PasswordEncryption();
 
     public ClientHandler(Socket connection, ArrayList<SocketPeer> users) throws Exception {
         if (connection == null)
@@ -79,7 +78,7 @@ public class ClientHandler extends Thread {
 
     private String rotearRequisicao(String tipo, Object dados) {
         try {
-            switch(tipo) {
+            switch (tipo) {
                 case "validarEmail":
                     return clientService.validarEmail((String) dados);
                 case "validarCPF":
@@ -87,26 +86,9 @@ public class ClientHandler extends Thread {
                 case "formatarCNPJ":
                     return clientService.formatarCNPJ((String) dados);
                 case "criptografarSenha":
-                    return passwordEncryption.generateHash((String) dados);
+                    return clientService.generateHashPassword((String) dados);
                 case "validarSenha":
-
-                    if (!(dados instanceof Map)) {
-                        return "{\"erro\":\"dados deve ser um objeto JSON contendo password e savedHash\"}";
-                    }
-
-                    Map<?, ?> rawMap = (Map<?, ?>) dados;
-
-                    Object passObj = rawMap.get("password");
-                    Object hashObj = rawMap.get("savedHash");
-
-                    if (passObj == null || hashObj == null) {
-                        return "{\"erro\":\"Campos necessários: password e savedHash\"}";
-                    }
-
-                    String senha = passObj.toString();
-                    String hash = hashObj.toString();
-
-                    return passwordEncryption.validatePassword(senha, hash);
+                    return clientService.validarSenha(dados);
 
 
                 default:
