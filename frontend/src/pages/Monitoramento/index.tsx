@@ -3,20 +3,23 @@ import {
   CheckCircleIcon,
   Eye,
   NotePencilIcon,
+  Trash,
   TrashIcon,
 } from "@phosphor-icons/react";
 import { Button, DataTable, StatusPulseDot, type Column } from "components";
 import { config } from "config";
-import { useUI } from "context";
+import { useNotification, useUI } from "context";
 import { useFetch } from "hooks";
 import { useState } from "react";
 import type { RecordType } from "types";
-import { getOrganizacao, getRecordStatusDescription } from "utils";
+import { apiFetch, getOrganizacao, getRecordStatusDescription } from "utils";
 import { FormMonitoramento } from "./form/FormMonitoramento";
 import { DetalheMonitoramento } from "./form/DetalheMonitoramento";
+import { v4 } from "uuid";
 
 export const Monitoramento = () => {
   const ui = useUI();
+  const { show } = useNotification();
   const [search, setSearch] = useState<string>("");
   const [selectedMonitoramento, setSelectedMonitoramento] =
     useState<RecordType>();
@@ -32,6 +35,38 @@ export const Monitoramento = () => {
       },
     },
   });
+
+  async function deletarMonitoramento(id: React.Key) {
+    const { error } = await apiFetch({
+      url: config.apiUrl + "/record/delete",
+      options: {
+        method: "DELETE",
+        params: {
+          recordId: id,
+        },
+      },
+    });
+
+    if (error) {
+      show!(
+        v4(),
+        "Deletar Monitoramento",
+        "error",
+        "Não foi possível deletar monitoramento."
+      );
+    } else {
+      refetch();
+
+      show!(
+        v4(),
+        "Deletar Monitoramento",
+        "error",
+        "Monitoramento deletado com sucesso."
+      );
+    }
+
+    setSelectedMonitoramento(undefined);
+  }
 
   const columns: Column<RecordType>[] = [
     {
@@ -139,18 +174,18 @@ export const Monitoramento = () => {
             }
           />
 
+          <Button
+            color="red"
+            title=""
+            icon={<TrashIcon />}
+            positionIcon="left"
+            type="button"
+            onClick={() => deletarMonitoramento(rowData.id)}
+          />
+
           {rowData.developmentStatus.toLocaleLowerCase() ==
             "pending_review" && (
             <>
-              <Button
-                color="red"
-                title=""
-                icon={<TrashIcon />}
-                positionIcon="left"
-                type="button"
-                onClick={() => console.log("Cancelar")}
-              />
-
               <Button
                 color="green"
                 title=""
@@ -254,6 +289,18 @@ export const Monitoramento = () => {
                             />
                           </>
                         )}
+
+                        <Button
+                          color="red"
+                          variant="ghost"
+                          title="Deletar"
+                          icon={<Trash />}
+                          positionIcon="left"
+                          type="button"
+                          onClick={() =>
+                            deletarMonitoramento(selectedMonitoramento.id)
+                          }
+                        />
                       </div>
                     )}
                   </>
