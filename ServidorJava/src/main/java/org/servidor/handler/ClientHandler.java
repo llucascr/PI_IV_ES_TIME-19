@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servidor.service.ClientService;
 import org.servidor.utility.EmailValidation;
+import org.servidor.utility.PasswordEncryption;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -77,13 +78,18 @@ public class ClientHandler extends Thread {
 
     private String rotearRequisicao(String tipo, Object dados) {
         try {
-            switch(tipo) {
+            switch (tipo) {
                 case "validarEmail":
                     return clientService.validarEmail((String) dados);
                 case "validarCPF":
                     return clientService.formatarCPF((String) dados);
                 case "formatarCNPJ":
                     return clientService.formatarCNPJ((String) dados);
+                case "criptografarSenha":
+                    return clientService.generateHashPassword((String) dados);
+                case "validarSenha":
+                    return clientService.validarSenha(dados);
+
 
                 default:
                     return "{\"erro\":\"Tipo de operação desconhecido\"}";

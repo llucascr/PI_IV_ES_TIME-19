@@ -5,6 +5,7 @@ export function saveOrganizacao(data: OrganizacaoByIdType): void {
   try {
     const encoded = btoa(JSON.stringify(data));
     localStorage.setItem(config.organizacaoCookieNome, encoded);
+    window.dispatchEvent(new Event(config.organizacaoCookieNome));
   } catch (err) {
     console.error("Erro ao salvar organização:", err);
   }

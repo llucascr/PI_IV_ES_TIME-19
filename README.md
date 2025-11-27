@@ -1,178 +1,108 @@
-# SafraTech
+# 🍓 Sistema de Rastreabilidade da Cadeia Produtiva do Morango (SafraTech)
 
-Sistema para rastreamento da cadeia produtiva do morango 🍓
-
----
+> O SafraTech é uma solução de software projetada para garantir **transparência**, **segurança alimentar** e **controle de qualidade** na cadeia produtiva de morangos. Através de uma arquitetura moderna, o sistema permite o **rastreamento granular de lotes** desde a colheita até o consumidor final, oferecendo perfis de acesso distintos para produtores, auditores e visitantes.
 
 ## 📌 Visão Geral
+A **rastreabilidade de alimentos** é um requisito crítico para a segurança sanitária e certificação de qualidade. O SafraTech resolve o problema da desconexão de dados entre as etapas de produção.
 
-O **SafraTech** é uma plataforma desenvolvida para monitorar e registrar todas as etapas da cadeia produtiva de morangos — da colheita ao armazenamento.
-O objetivo é garantir **transparência**, **qualidade** e **segurança**, proporcionando que produtores e demais stakeholders acompanhem a origem e o histórico completo de cada lote.
+### Principais Funcionalidades
 
----
-
-## 🎯 Objetivos
-
-* Rastrear cada lote de morangos desde a colheita até a entrega final.
-* Armazenar e disponibilizar dados em tempo real sobre as etapas do processo.
-* Permitir auditoria e histórico completo de cada lote (quem fez, quando fez, onde fez).
-* Facilitar a conformidade com requisitos de qualidade, segurança alimentar e sustentabilidade.
-* Oferecer interface para produtores, auditores e público visitante (modo teste).
+* **📦 Rastreamento de Lotes:** Histórico imutável de eventos (Colheita, Transporte, Armazenamento).
+* **🔐 Controle de Acesso:** Autenticação via **JWT** com *roles* específicas (**ADMIN**, **PRODUTOR**, **FUNCIONARIO**).
+* **📊 Auditoria em Tempo Real:** Visualização de dados para conformidade com normas sanitárias.
 
 ---
 
-## 🧩 Tecnologias Utilizadas
+## 🏗 Arquitetura do Projeto
+O projeto segue uma arquitetura de **API RESTful desacoplada**:
 
-### **Backend**
-
-* Java 17
-* Spring Boot
-* Spring Security com JWT
-* MongoDB
-
-### **Frontend**
-
-* React
-* Axios
-* Styled-Components
-
-### **Ferramentas e Gerenciamento**
-
-* Maven (backend)
-* npm (frontend)
+* **Backend (Server):** Desenvolvido em **Java com Spring Boot**, responsável pela regra de negócios, segurança (**Spring Security**) e persistência de dados no **MongoDB**.
+* **Frontend (Client):** **Single Page Application (SPA)** em **React**, consumindo a API via **Axios**.
+* **Banco de Dados:** **MongoDB (NoSQL)**, escolhido pela flexibilidade de schema para armazenar metadados variados de diferentes lotes de produção.
 
 ---
 
-## ⚙️ Instalação e Execução
+## 🛠 Tecnologias
 
-### **1. Clonar o repositório**
+### Backend
+| Categoria | Tecnologia |
+| :--- | :--- |
+| **Linguagem** | Java 17 |
+| **Framework** | Spring Boot 3+ |
+| **Segurança** | Spring Security + JWT (JSON Web Token) |
+| **Banco de Dados** | MongoDB |
+| **Build Tool** | Maven |
+
+### Frontend
+| Categoria | Tecnologia |
+| :--- | :--- |
+| **Framework** | React.js |
+| **Estilização** | Styled-Components |
+| **Cliente HTTP** | Axios |
+| **Gerenciador** | NPM |
+
+---
+
+## 📋 Pré-requisitos
+Antes de começar, certifique-se de ter instalado em sua máquina:
+
+* **Java JDK 17**
+* **Node.js (v16 ou superior)**
+* **MongoDB** (Rodando localmente ou via Docker)
+* **Git**
+
+---
+
+## 🚀 Instalação e Execução
+
+### 1. Clonar o Repositório
 
 ```bash
-git clone https://github.com/llucascr/PI_IV_ES_TIME-19.git
+git clone [https://github.com/llucascr/PI_IV_ES_TIME-19.git](https://github.com/llucascr/PI_IV_ES_TIME-19.git)
 cd PI_IV_ES_TIME-19
 ```
 
-### **2. Backend**
+### Backend (API)
+O backend necessita de variáveis de ambiente para conectar ao banco de dados.
 
-```bash
-cd backend
-mvn install            # instala dependências
-```
+1.  Navegue até a pasta do servidor:
 
-Defina as variáveis de ambiente:
+    ```bash
+    cd backend
+    ```
 
-**Windows (CMD):**
+2.  **Configuração de Ambiente:** Defina as credenciais do seu **MongoDB** no terminal atual ou nas configurações de "Run Configuration" da sua IDE.
 
-```bash
-set MB_USERNAME=seu_usuario_mongo
-set MB_PASSWORD=sua_senha_mongo
-```
+| Variável | Comando Exemplo |
+| :--- | :--- |
+| **MB_URI** | `mongodb+srv://<USERNAME>:<PASSWORD>@clusterpi4.rdiy6em.mongodb.net/?retryWrites=true&w=majority&appName=ClusterPI4` |
 
-**Linux/Mac:**
+3.  Instale as dependências e execute:
 
-```bash
-export MB_USERNAME=seu_usuario_mongo
-export MB_PASSWORD=sua_senha_mongo
-```
+    ```bash
+    mvn clean install
+    mvn spring-boot:run
+    ```
 
-Execute o projeto:
+> O Spring iniciará na porta padrão **8080**.
 
-```bash
-mvn spring-boot:run
-```
+### Frontend (SPA)
+1.  Abra um novo terminal e navegue até a pasta web:
 
-Ou rode pela sua IDE no arquivo `Application.java`.
+    ```bash
+    cd frontend
+    ```
 
----
+2.  Instale as dependências e inicie o projeto:
 
-### **3. Frontend**
+    ```bash
+    npm install
+    npm start
+    ```
 
-```bash
-cd frontend
-npm install            # instala dependências
-npm start              # inicia o servidor de desenvolvimento
-```
-
-Acesse no navegador:
-👉 [http://localhost:3000](http://localhost:3000)
+> A aplicação abrirá automaticamente em **http://localhost:3000**.
 
 ---
 
-## 🚀 Como Usar
-
-1. Abra a aplicação no navegador.
-2. Faça login com sua conta ou utilize o modo visitante para testar.
-3. No painel principal você poderá:
-
-   * Registrar novos lotes de morangos.
-   * Inserir informações sobre colheita, transporte e armazenamento.
-   * Consultar o histórico completo de rastreamento de cada lote.
-4. Explore os menus e funcionalidades conforme seu perfil de usuário.
-
----
-
-## ✅ Funcionalidades Principais
-
-* Registro de lote: origem, produtor, data, localização.
-* Adição de eventos/etapas: colheita, transporte, armazenamento, entrega.
-* Autenticação e autorização (usuário produtor, auditor, visitante).
-* Visualização de histórico completo por lote.
-* Interface responsiva e intuitiva.
-
----
-
-## 📂 Estrutura do Projeto
-
-```
-PI_IV_ES_TIME-19/
-├── backend/         # API Java + Spring Boot
-└── frontend/        # Cliente React
-```
-
----
-
-## 🧭 Roadmap (Próximos Passos)
-
-* [ ] Implementar relatórios e dashboards de desempenho
-* [ ] Adicionar filtros e notificações em tempo real
-* [ ] Integrar com sistema de QR-code / etiqueta por lote
-* [ ] Melhorias de UI/UX para perfil visitante
-* [ ] Internacionalização (i18n) do frontend
-
----
-
-## 🤝 Contribuições
-
-Contribuições são bem-vindas!
-Siga o fluxo abaixo:
-
-1. Faça um *fork* do repositório.
-2. Crie uma branch para sua feature:
-
-   ```bash
-   git checkout -b feature/MinhaFuncionalidade
-   ```
-3. Faça commits descritivos:
-
-   ```bash
-   git commit -m "Descrição da feature"
-   ```
-4. Envie a branch:
-
-   ```bash
-   git push origin feature/MinhaFuncionalidade
-   ```
-5. Abra um *pull request* no repositório principal.
-
----
-
-## 📝 Licença
-
-Este projeto está licenciado sob a **Licença MIT**.
-Consulte o arquivo `LICENSE` para mais informações.
-
----
-
-## 📧 Contato
-
-Para dúvidas ou suporte, entre em contato com o time de desenvolvimento do **SafraTech**.
+## 🔌 Documentação da API
+Em breve será implementada com **Swagger UI**
