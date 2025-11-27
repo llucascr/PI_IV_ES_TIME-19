@@ -154,7 +154,7 @@ export const FormMonitoramento = ({
             ? { recordId: monitoramento.id, pragueId: praga.id }
             : { pragueId: praga.id },
           data: {
-            userId: "5f996f5b-6218-442a-b6a0-55834ed5b660",
+            userId: localStorage.getItem("safratechUserId"),
             clientId: cliente.id,
             batchId: lote.id,
 

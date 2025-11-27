@@ -63,7 +63,7 @@ export const LoginPage = () => {
       return;
     }
 
-    const { token, name, organizationId } = data;
+    const { token, name, organizationId, userId } = data;
 
     if (!token) {
       setMensagemErro("Resposta inesperada do servidor.");
@@ -73,6 +73,7 @@ export const LoginPage = () => {
     setCookie(config.tokenCookieNome, token, 5);
 
     localStorage.setItem("safratechUserName", name);
+    localStorage.setItem("safratechUserId", userId);
 
     handleBuscarOrganizacao(organizationId);
 
