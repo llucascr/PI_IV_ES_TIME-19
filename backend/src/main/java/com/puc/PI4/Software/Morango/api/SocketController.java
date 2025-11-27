@@ -15,7 +15,7 @@ import java.util.Map;
 @RequestMapping("api/v1/socket")
 public class SocketController {
 
-    private final int PORTA_PADRAO = 3000;
+    private final int PORTA_PADRAO = 4000;
     private final ObjectMapper mapper;
 
     @PostMapping("/validarEmail")
@@ -79,6 +79,57 @@ public class SocketController {
             Map<String, Object> request = new HashMap<>();
             request.put("tipo", "validarCPF");
             request.put("dados", cpf);
+
+            String jsonRequest = mapper.writeValueAsString(request);
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            out.println(jsonRequest);
+
+            return ResponseEntity.ok(in.readLine());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("{\"erro\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/criptografarSenha")
+    public ResponseEntity<String> criptografarSenha(@RequestParam String password) {
+        try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
+
+            Map<String, Object> request = new HashMap<>();
+            request.put("tipo", "criptografarSenha");
+            request.put("dados", password);
+
+            String jsonRequest = mapper.writeValueAsString(request);
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            out.println(jsonRequest);
+
+            return ResponseEntity.ok(in.readLine());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("{\"erro\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/validarSenha")
+    public ResponseEntity<String> validarSenha(@RequestParam String password, @RequestParam String savedHash) {
+        try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
+
+            Map<String, Object> request = new HashMap<>();
+            request.put("tipo", "validarSenha");
+
+            Map<String, Object> dados = new HashMap<>();
+            dados.put("password", password);
+            dados.put("savedHash", savedHash);
+
+            request.put("dados", dados);
 
             String jsonRequest = mapper.writeValueAsString(request);
 

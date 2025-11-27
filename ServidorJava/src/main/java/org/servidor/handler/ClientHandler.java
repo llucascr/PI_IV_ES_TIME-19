@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servidor.service.ClientService;
 import org.servidor.utility.EmailValidation;
+import org.servidor.utility.PasswordEncryption;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,6 +19,7 @@ public class ClientHandler extends Thread {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final ClientService clientService = new ClientService();
+    private final PasswordEncryption passwordEncryption = new PasswordEncryption();
 
     public ClientHandler(Socket connection, ArrayList<SocketPeer> users) throws Exception {
         if (connection == null)
@@ -84,6 +86,28 @@ public class ClientHandler extends Thread {
                     return clientService.formatarCPF((String) dados);
                 case "formatarCNPJ":
                     return clientService.formatarCNPJ((String) dados);
+                case "criptografarSenha":
+                    return passwordEncryption.generateHash((String) dados);
+                case "validarSenha":
+
+                    if (!(dados instanceof Map)) {
+                        return "{\"erro\":\"dados deve ser um objeto JSON contendo password e savedHash\"}";
+                    }
+
+                    Map<?, ?> rawMap = (Map<?, ?>) dados;
+
+                    Object passObj = rawMap.get("password");
+                    Object hashObj = rawMap.get("savedHash");
+
+                    if (passObj == null || hashObj == null) {
+                        return "{\"erro\":\"Campos necessários: password e savedHash\"}";
+                    }
+
+                    String senha = passObj.toString();
+                    String hash = hashObj.toString();
+
+                    return passwordEncryption.validatePassword(senha, hash);
+
 
                 default:
                     return "{\"erro\":\"Tipo de operação desconhecido\"}";
