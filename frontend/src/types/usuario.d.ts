@@ -2,6 +2,7 @@ export type UsuarioType = {
   id: React.Key;
   name: string;
   email: string;
+  cpf: string;
   createAt: string;
   updateAt: string | null;
   active: boolean;

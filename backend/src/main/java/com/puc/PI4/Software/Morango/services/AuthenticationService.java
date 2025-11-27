@@ -43,7 +43,7 @@ public class AuthenticationService {
         var user = (User) auth.getPrincipal();
         var token = tokenService.generateToken(user);
 
-        return new LoginResponse(token, user.getName());
+        return new LoginResponse(token, user.getName(), user.getIdOrganization(), user.getId());
     }
 
     public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {

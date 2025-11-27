@@ -34,7 +34,7 @@ public class RecordService {
     private final ClientRepository clientRepository;
     private final BatchRepository batchRepository;
 
-    public RecordResponse createRecord(RecordRequest recordRequest) {
+    public RecordResponse createRecord(RecordRequest recordRequest, String pragueId) {
 
         User user = userRepository.findById(recordRequest.getUserId()).orElseThrow(
                 () -> new UserNotFound("User not found"));
@@ -61,7 +61,7 @@ public class RecordService {
                 .organizationId(user.getIdOrganization())
                 .clientId(client.getId())
                 .batchId(batch.getId())
-                .pragueId(null)
+                .pragueId(pragueId)
                 .createAt(LocalDateTime.now())
                 .build();
 
@@ -113,7 +113,7 @@ public class RecordService {
         return dto;
     }
 
-    public RecordResponse update(String recordId, RecordRequest recordRequest) {
+    public RecordResponse update(String recordId, String pragueId, RecordRequest recordRequest) {
         Record record = recordRepository.findById(recordId).orElseThrow(
                 () -> new RecordNotFound("Record not found"));
 
@@ -133,6 +133,7 @@ public class RecordService {
                 .organizationId(record.getOrganizationId())
                 .clientId(recordRequest.getClientId())
                 .batchId(recordRequest.getBatchId())
+                .pragueId(pragueId)
                 .createAt(record.getCreateAt())
                 .updateAt(LocalDateTime.now())
                 .build();

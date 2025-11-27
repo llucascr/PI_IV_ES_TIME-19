@@ -4,7 +4,9 @@ export type inputElementsType<T> = {
   title: string;
   iconPosition?: "left" | "right";
   icon?: React.JSX.Element;
-} & React.InputHTMLAttributes<HTMLInputElement | HTMLSelectElement>;
+} & React.InputHTMLAttributes<
+  HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+>;
 
 export type InputProps<T> = {
   error?: string;
