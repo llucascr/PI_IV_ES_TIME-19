@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Logo from "../../../public/logo.svg";
 import { config } from "config";
-import { apiFetch } from "utils";
+import { apiFetch, saveOrganizacao } from "utils";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeSlash } from "@phosphor-icons/react";
 import { useCookie } from "hooks";
@@ -16,6 +16,25 @@ export const LoginPage = () => {
 
   const navigate = useNavigate();
   const { setCookie } = useCookie();
+
+  async function handleBuscarOrganizacao(organizacaoId: string) {
+    const { data, error } = await apiFetch({
+      url: config.apiUrl + "/organization/listById",
+      options: {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: { organizationId: organizacaoId },
+      },
+    });
+
+    if (error) {
+      console.log(error);
+    } else {
+      saveOrganizacao(data);
+    }
+  }
 
   async function onSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,17 +63,18 @@ export const LoginPage = () => {
       return;
     }
 
-    const { token, name, idOrganization } = data;
+    const { token, name, organizationId } = data;
 
-   if (!token) {
+    if (!token) {
       setMensagemErro("Resposta inesperada do servidor.");
       return;
     }
 
-     setCookie(config.tokenCookieNome, token, 5);
+    setCookie(config.tokenCookieNome, token, 5);
 
     localStorage.setItem("safratechUserName", name);
-    localStorage.setItem("safratechOrganizationId", idOrganization);
+
+    handleBuscarOrganizacao(organizationId);
 
     navigate("/");
   }
