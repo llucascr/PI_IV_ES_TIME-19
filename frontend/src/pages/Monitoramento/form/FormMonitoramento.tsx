@@ -26,6 +26,15 @@ type FormMonitoramento = {
   observation: string;
 };
 
+type FormFields = {
+  dataHora: string;
+  plantsCount: number;
+  observation: string;
+  attackedPlantsCount?: number;
+  infestationPercentage?: number;
+  evaluatedPlantsCount?: number;
+};
+
 const optionsDevelopmentStatus: SelectOptionType[] = [
   { value: "scheduled", name: "Agendado" },
   { value: "in_progress", name: "Em Progresso" },
@@ -80,7 +89,7 @@ export const FormMonitoramento = ({
     }));
   }
 
-  const { data: dataPraga } = useFetch({
+  const { data: dataPraga } = useFetch<{ data: PragaType[] }>({
     url: config.apiUrl + "/prague/list",
     options: {
       method: "GET",
@@ -116,19 +125,24 @@ export const FormMonitoramento = ({
     setDataLote(dataLote || []);
   }
 
-  const isFormValid = Object.values({
+  const fields: FormFields = {
     dataHora: form.dataHora,
     plantsCount: form.plantsCount,
-    evaluatedPlantsCount: form.evaluatedPlantsCount,
-    attackedPlantsCount: form.attackedPlantsCount,
-    infestationPercentage: form.infestationPercentage,
     observation: form.observation,
-  }).every((v) => !!v);
+  };
+
+  if (action === "update") {
+    fields.evaluatedPlantsCount = form.evaluatedPlantsCount;
+    fields.attackedPlantsCount = form.attackedPlantsCount;
+    fields.infestationPercentage = form.infestationPercentage;
+  }
+
+  const isFormValid = Object.values(fields).every((v) => !!v);
 
   async function onSave(e: any) {
     e.preventDefault();
 
-    if (isFormValid) {
+    if (isFormValid && praga) {
       const { error } = await apiFetch({
         url: config.apiUrl + "/record/" + action,
         options: {
@@ -190,6 +204,14 @@ export const FormMonitoramento = ({
     }
   }, [monitoramento, dataLote]);
 
+  useEffect(() => {
+    if (dataPraga) {
+      const praga = dataPraga.find((p) => p.id == monitoramento?.prague?.id);
+
+      setPraga(praga ?? ({} as PragaType));
+    }
+  }, [monitoramento, dataPraga]);
+
   return (
     <form action="" className="flex flex-col gap-4 p-4">
       {tab === "monitoramento" && (
@@ -237,41 +259,45 @@ export const FormMonitoramento = ({
             onChange={handleChange}
           />
 
-          <Input
-            title="Quantidade de Plantas Avaliadas"
-            field="evaluatedPlantsCount"
-            id="evaluatedPlantsCount"
-            required
-            placeholder="Quantidade de Plantas Avaliadas"
-            type="number"
-            min={0}
-            value={form.evaluatedPlantsCount}
-            onChange={handleChange}
-          />
+          {action == "update" && (
+            <>
+              <Input
+                title="Quantidade de Plantas Avaliadas"
+                field="evaluatedPlantsCount"
+                id="evaluatedPlantsCount"
+                required
+                placeholder="Quantidade de Plantas Avaliadas"
+                type="number"
+                min={0}
+                value={form.evaluatedPlantsCount}
+                onChange={handleChange}
+              />
 
-          <Input
-            title="Quantidade de Plantas Atacadas"
-            field="attackedPlantsCount"
-            id="attackedPlantsCount"
-            required
-            placeholder="Quantidade de Plantas Atacadas"
-            type="number"
-            min={0}
-            value={form.attackedPlantsCount}
-            onChange={handleChange}
-          />
+              <Input
+                title="Quantidade de Plantas Atacadas"
+                field="attackedPlantsCount"
+                id="attackedPlantsCount"
+                required
+                placeholder="Quantidade de Plantas Atacadas"
+                type="number"
+                min={0}
+                value={form.attackedPlantsCount}
+                onChange={handleChange}
+              />
 
-          <Input
-            title="Porcentual de Infestação"
-            field="infestationPercentage"
-            id="infestationPercentage"
-            required
-            placeholder="Porcentual de Infestação"
-            type="number"
-            min={0}
-            value={form.infestationPercentage}
-            onChange={handleChange}
-          />
+              <Input
+                title="Porcentual de Infestação"
+                field="infestationPercentage"
+                id="infestationPercentage"
+                required
+                placeholder="Porcentual de Infestação"
+                type="number"
+                min={0}
+                value={form.infestationPercentage}
+                onChange={handleChange}
+              />
+            </>
+          )}
 
           <textarea
             className="w-full p-2 border border-gray-300 rounded"
@@ -331,7 +357,7 @@ export const FormMonitoramento = ({
                 setTab("details");
                 setError(false);
               }}
-              disable={!isFormValid}
+              disable={!isFormValid || !praga.id}
             />
           </>
         )}

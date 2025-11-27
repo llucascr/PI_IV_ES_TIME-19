@@ -113,7 +113,7 @@ public class RecordService {
         return dto;
     }
 
-    public RecordResponse update(String recordId, RecordRequest recordRequest) {
+    public RecordResponse update(String recordId, String pragueId, RecordRequest recordRequest) {
         Record record = recordRepository.findById(recordId).orElseThrow(
                 () -> new RecordNotFound("Record not found"));
 
@@ -133,6 +133,7 @@ public class RecordService {
                 .organizationId(record.getOrganizationId())
                 .clientId(recordRequest.getClientId())
                 .batchId(recordRequest.getBatchId())
+                .pragueId(pragueId)
                 .createAt(record.getCreateAt())
                 .updateAt(LocalDateTime.now())
                 .build();

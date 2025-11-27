@@ -61,7 +61,8 @@ public class RecordController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<RecordResponse> updatePost(@RequestParam String recordId, @RequestBody RecordRequest recordRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(recordService.update(recordId, recordRequest));
+    public ResponseEntity<RecordResponse> updatePost(@RequestParam String recordId,
+                                                     @RequestParam String pragueId,@RequestBody RecordRequest recordRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(recordService.update(recordId, pragueId, recordRequest));
     }
 }

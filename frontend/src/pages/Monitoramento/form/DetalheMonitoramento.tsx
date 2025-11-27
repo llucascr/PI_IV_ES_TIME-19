@@ -1,4 +1,5 @@
 import { CaretDownIcon, PresentationChart } from "@phosphor-icons/react";
+import moment from "moment";
 import type { RecordType } from "types";
 import { applyMask, getRecordStatusDescription } from "utils";
 
@@ -24,7 +25,7 @@ export const DetalheMonitoramento = ({
             {monitoramento.prague && (
               <span className="flex gap-2 text-black text-sm font-normal leading-normal">
                 <strong>Praga:</strong>{" "}
-                <p className="first-letter:uppercase">
+                <p className="first-letter:uppercase italic">
                   {monitoramento.prague.comumName}
                 </p>
               </span>
@@ -39,7 +40,7 @@ export const DetalheMonitoramento = ({
               Data e Hora
             </p>
             <p className="text-text-value text-sm font-medium leading-normal text-right">
-              18/07/2024 14:30
+              {moment(monitoramento.dataHora).format("DD/MM/YYYY HH:mm")}
             </p>
           </div>
           <div className="flex justify-between items-center gap-x-4 py-2.5">
