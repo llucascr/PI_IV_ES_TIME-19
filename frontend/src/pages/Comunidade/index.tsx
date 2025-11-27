@@ -13,14 +13,14 @@ export const Comunidade: React.FC = () => {
     const { data, error, loaded, refetch } = useFetch<{ data: PostType[] }>({
         url: config.apiUrl + "/post/list",
         options: {
-          method: "GET",
-          params: {
-            page: 0,
-            numberOfPragues: 100,
-          },
+            method: "GET",
+            params: {
+                page: 0,
+                numberOfPragues: 100,
+            },
         },
-      });
-      console.log(data);
+    });
+    console.log(data);
     return (
         <div style={{ display: "flex", flexDirection: "row", gap: 24 }}>
             <aside
@@ -115,7 +115,36 @@ export const Comunidade: React.FC = () => {
 
 
                 <FormComunidade refetch={refetch} />
+
+                <section style={{ marginTop: 20, maxWidth: 700 }}>
+                    {loaded && <p>Carregando posts...</p>}
+
+                    {!loaded && (
+                        <p style={{ opacity: 0.6 }}>Nenhuma postagem ainda.</p>
+                    )}
+                    {
+                        data && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                                {data.map((p) => (
+                                    <PostCard key={p.id} post={p} />
+                                ))}
+                            </div>
+                        )
+                    }
+                </section>
             </main>
         </div>
+    );
+};
+
+interface PostCardProps {
+    post: PostType;
+}
+
+const PostCard = ({ post }: PostCardProps) => {
+    return (
+        <pre>
+            {JSON.stringify(post, null, 2)}
+        </pre>
     );
 };

@@ -25,7 +25,7 @@ export const FormComunidade = ({
     setLoading(true);
 
     const { data } = await apiFetch({
-      url: config.apiUrl + "/post/all",
+      url: config.apiUrl + "/post/update",
       options: { method: "GET" },
     });
 
@@ -48,7 +48,7 @@ export const FormComunidade = ({
           "Content-Type": "application/json",
         },
         data: {
-          userId: "5f996f5b-6218-442a-b6a0-55834ed5b660",
+          userId: "7d1a286e-396e-4a4e-bf04-02819a71a746",
           title: "Moranguetes",
           description: "Morango Tango Bombado",
           text: newPost,
@@ -108,19 +108,6 @@ export const FormComunidade = ({
           >
             Postar
           </button>
-        </div>
-      </section>
-      <section style={{ marginTop: 20, maxWidth: 700 }}>
-        {loading && <p>Carregando posts...</p>}
-
-        {!loading && posts.length === 0 && (
-          <p style={{ opacity: 0.6 }}>Nenhuma postagem ainda.</p>
-        )}
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {posts.map((p) => (
-            <PostCard key={p.id} post={p} />
-          ))}
         </div>
       </section>
     </>
