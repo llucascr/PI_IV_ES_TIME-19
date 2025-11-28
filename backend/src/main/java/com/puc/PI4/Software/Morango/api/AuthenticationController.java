@@ -8,8 +8,10 @@ import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
+import com.puc.PI4.Software.Morango.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,47 +30,15 @@ import java.util.UUID;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
-    private final UserRepository userRepository;
-
-    private final AuthenticationManager authenticationManager;
-    private final TokenService tokenService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid AuthenticationRequest data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
-
-        var user = (User) auth.getPrincipal();
-        var token = tokenService.generateToken(user);
-
-        var response = new LoginResponse(
-                token,
-                user.getName()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authenticationService.login(data));
     }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
-
-        if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
-
-        if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
-
-        String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
-        User user = User.builder()
-                .id(UUID.randomUUID().toString())
-                .name(data.getName())
-                .email(data.getEmail())
-                .password(ecryptedPassword)
-                .cpf(data.getCpf())
-                .createAt(LocalDateTime.now())
-                .active(true)
-                .role(data.getRole())
-                .build();
-
-        userRepository.save(user);
-        return ResponseEntity.ok().build();
+        return authenticationService.register(data);
     }
 }

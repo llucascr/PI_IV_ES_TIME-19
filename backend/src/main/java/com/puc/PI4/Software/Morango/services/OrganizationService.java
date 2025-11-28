@@ -54,27 +54,6 @@ public class OrganizationService {
         return modelMapper.map(organizationRepository.save(organization), OrganizationResponse.class);
     }
 
-    public InsertIntoOrganizationResponse insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {
-
-        User user = userRepository.opFindByEmail(employeeEmail).orElseThrow(
-                () -> new UserNotFound("User with email " + employeeEmail + " not found"));
-
-        Organization organization = organizationRepository.findByCnpj(organizationCnpj).orElseThrow(
-                () ->  new OrganizationNotFound("Organization with cnpj " + organizationCnpj + " not found"));
-
-        if (organization.getActive() == false) {
-            throw new OrganizationIsNotActive("Organization with CNPJ " + organizationCnpj + " is not active");
-        }
-
-        user.setIdOrganization(organization.getId());
-        organization.setEmployees(user);
-
-        userRepository.save(user);
-        organizationRepository.save(organization);
-
-        return modelMapper.map(organizationRepository.save(organization), InsertIntoOrganizationResponse.class);
-    }
-
     public OrganizationResponse listOrganizationById(String organizationId) {
         Organization organization = organizationRepository.findById(organizationId).orElseThrow(
                 () -> new  OrganizationNotFound("Organization with id " + organizationId + " not found"));

@@ -58,5 +58,5 @@ export type RecordType = {
     id: string;
     comumName: string;
     cientificName: string;
-  };
+  } | null;
 };

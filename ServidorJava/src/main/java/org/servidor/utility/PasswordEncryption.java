@@ -1,17 +1,17 @@
 package org.servidor.utility;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.mindrot.jbcrypt.BCrypt;
 import org.servidor.model.Command;
 
 public class PasswordEncryption implements Command {
 
-    private String senha;
-
-    public PasswordEncryption(String senha) {
-        this.senha = senha;
+    public static String generateHash(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public String getSenha() {
-        return this.senha;
+    public static boolean isValid(String password, String savedHash){
+        return BCrypt.checkpw(password, savedHash);
     }
 
     @Override

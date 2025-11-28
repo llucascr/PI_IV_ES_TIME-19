@@ -4,7 +4,7 @@ import { config } from "config";
 import { useUI } from "context";
 import { useState } from "react";
 import type { UsuarioType } from "types";
-import { apiFetch } from "utils";
+import { apiFetch, getOrganizacao } from "utils";
 
 export const FormUsuario = ({
   action,
@@ -21,6 +21,7 @@ export const FormUsuario = ({
   const [name, setName] = useState<string>(usuario?.name || "");
   const [email, setEmail] = useState<string>(usuario?.email || "");
   const [password, setPassword] = useState<string>("");
+  const [cpf, setCpf] = useState<string>(usuario?.cpf || "");
 
   async function onSave(e: any) {
     e.preventDefault();
@@ -39,6 +40,8 @@ export const FormUsuario = ({
           name,
           email,
           password,
+          cpf,
+          organizationCnpj: getOrganizacao()?.cnpj,
         },
       },
     });
@@ -77,6 +80,17 @@ export const FormUsuario = ({
       />
 
       <Input
+        title="CPF"
+        field="cpf"
+        id="cpf"
+        required
+        placeholder="000.000.000-00"
+        type="text"
+        value={cpf}
+        onChange={(e) => setCpf(e.target.value)}
+      />
+
+      <Input
         title="Senha"
         field="senha"
         id="senha"
@@ -105,7 +119,7 @@ export const FormUsuario = ({
           color="yellow"
           title="Cancelar"
           type="button"
-          onClick={() => ui.hide("modal", `${action}-praga`)}
+          onClick={() => ui.hide("modal", `${action}-usuario`)}
         />
         <Button
           color="green"
@@ -113,7 +127,10 @@ export const FormUsuario = ({
           type="submit"
           onClick={onSave}
           disable={
-            !name || !email || (action === "create" && password.length < 8)
+            !name ||
+            !email ||
+            !cpf ||
+            (action === "create" && password.length < 8)
           }
         />
       </div>
