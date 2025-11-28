@@ -70,8 +70,7 @@ public class SocketUtility {
             return in.readLine();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            throw new ServerOffline("Server out of service.");
         }
     }
 
@@ -92,8 +91,7 @@ public class SocketUtility {
             return in.readLine();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            throw new ServerOffline("Server out of service.");
         }
     }
 
@@ -119,8 +117,7 @@ public class SocketUtility {
             return in.readLine();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            throw new ServerOffline("Server out of service.");
         }
     }
 
