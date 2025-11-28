@@ -15,6 +15,7 @@ import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
+import com.puc.PI4.Software.Morango.utils.SocketUtility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+    private final SocketUtility socketUtility;
+
     public LoginResponse login(AuthenticationRequest data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -48,8 +51,10 @@ public class AuthenticationService {
         return new LoginResponse(token, user.getName(), user.getIdOrganization(), user.getId());
     }
 
-    public UserRegisterResponse register(@RequestBody @Valid RegisterResquest data) {
-        if (this.userRepository.findByEmail(data.getEmail()) != null) throw new EmailInvaid("Erro ao criar usuário");
+    public UserRegisterResponse register(RegisterResquest data) {
+        if (this.userRepository.findByEmail(data.getEmail()) != null) throw new EmailInvaid("Error creating user");
+
+        if (!socketUtility.validarEmail(data.getEmail())) throw new EmailInvaid("Error creating user, invalid email");
 
         if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
 
