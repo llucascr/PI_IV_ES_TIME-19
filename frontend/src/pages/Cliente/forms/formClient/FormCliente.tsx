@@ -4,7 +4,7 @@ import { config } from "config";
 import { useUI } from "context";
 import { useState } from "react";
 import type { ClienteType } from "types";
-import { apiFetch } from "utils";
+import { apiFetch, getOrganizacao } from "utils";
 
 export const FormCliente = ({
   action,
@@ -35,10 +35,10 @@ export const FormCliente = ({
         params: cliente
           ? {
               clientId: cliente.id,
-              idOrganization: "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e",
+              idOrganization: getOrganizacao()?.id,
             }
           : {
-              idOrganization: "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e",
+              idOrganization: getOrganizacao()?.id,
             },
         data: {
           name: nome,

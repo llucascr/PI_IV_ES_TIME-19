@@ -8,8 +8,9 @@ import { config } from "config";
 import { FormBatch } from "./forms/formBatch";
 import { useFetch } from "hooks";
 import type { ClienteType, LoteType } from "types/cliente";
+import { getOrganizacao } from "utils";
 
-const ORG_ID = "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e";
+const ORG_ID = getOrganizacao()?.id;
 
 const fmt = new Intl.NumberFormat("pt-BR", {
   minimumFractionDigits: 2,
