@@ -4,6 +4,7 @@ import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationReq
 import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.LoginResponse;
 import com.puc.PI4.Software.Morango.dto.response.organization.InsertIntoOrganizationResponse;
+import com.puc.PI4.Software.Morango.dto.response.user.UserRegisterResponse;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotActive;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
@@ -16,6 +17,7 @@ import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,8 +48,8 @@ public class AuthenticationService {
         return new LoginResponse(token, user.getName(), user.getIdOrganization(), user.getId());
     }
 
-    public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
-        if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
+    public UserRegisterResponse register(@RequestBody @Valid RegisterResquest data) {
+        if (this.userRepository.findByEmail(data.getEmail()) != null) throw new EmailInvaid("Erro ao criar usuário");
 
         if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
 
@@ -66,7 +68,7 @@ public class AuthenticationService {
         userRepository.save(user);
         insertUserIntoOrganization(user.getEmail(), data.getOrganizationCnpj());
 
-        return ResponseEntity.ok().build();
+        return new UserRegisterResponse(user.getName(), "Usuário criado com sucesso!");
     }
 
     private void insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {

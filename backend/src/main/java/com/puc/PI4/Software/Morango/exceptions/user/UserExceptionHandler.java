@@ -76,4 +76,12 @@ public class UserExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(EmailInvaid.class)
+    public ProblemDetail handlerEmailInvalid(EmailInvaid e) {
+        ProblemDetail problem = ProblemDetail.forStatus(e.getHttpStatus());
+        problem.setTitle(e.getCode());
+        problem.setDetail(e.getMessage());
+        return problem;
+    }
+
 }
