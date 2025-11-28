@@ -81,7 +81,7 @@ public class ClientHandler extends Thread {
             switch (tipo) {
                 case "validarEmail":
                     return clientService.validarEmail((String) dados);
-                case "validarCPF":
+                case "formatarCPF":
                     return clientService.formatarCPF((String) dados);
                 case "formatarCNPJ":
                     return clientService.formatarCNPJ((String) dados);
