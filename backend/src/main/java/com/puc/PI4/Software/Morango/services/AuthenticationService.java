@@ -58,13 +58,15 @@ public class AuthenticationService {
 
         if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
 
-        String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+        String ecryptedPassword = socketUtility.criptografarSenha(data.getPassword());
+        String cpfFormatado = socketUtility.formatarCpf(data.getCpf());
+
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
                 .name(data.getName())
                 .email(data.getEmail())
                 .password(ecryptedPassword)
-                .cpf(data.getCpf())
+                .cpf(cpfFormatado)
                 .createAt(LocalDateTime.now())
                 .active(true)
                 .role(data.getRole())

@@ -58,7 +58,7 @@ public class SocketUtility {
         try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
 
             Map<String, Object> request = new HashMap<>();
-            request.put("tipo", "formatarCpf");
+            request.put("tipo", "formatarCPF");
             request.put("dados", cpf);
 
             String jsonRequest = mapper.writeValueAsString(request);
@@ -68,7 +68,19 @@ public class SocketUtility {
 
             out.println(jsonRequest);
 
-            return in.readLine();
+            JsonNode responseJson = mapper.readTree(in.readLine());
+
+            if (responseJson.has("formatado")) {
+                String cpfFormatado = responseJson.get("formatado").asText();
+
+                if (cpfFormatado.equals("-1")) {
+                    throw new CnpjInvalid("CPF Invalid!");
+                }
+
+                return cpfFormatado;
+            }
+
+            return cpf;
 
         } catch (Exception e) {
             throw new ServerOffline("Server out of service.");
@@ -122,7 +134,9 @@ public class SocketUtility {
 
             out.println(jsonRequest);
 
-            return in.readLine();
+            JsonNode responseJson = mapper.readTree(in.readLine());
+
+            return responseJson.get("hash").asText();
 
         } catch (Exception e) {
             throw new ServerOffline("Server out of service.");
