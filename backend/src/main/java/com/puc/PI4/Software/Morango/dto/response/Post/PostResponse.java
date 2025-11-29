@@ -14,6 +14,7 @@ public class PostResponse {
 
     private String id;
     private String postOwner;
+    private String userId;
     private String title;
     private String description;
     private String text;
