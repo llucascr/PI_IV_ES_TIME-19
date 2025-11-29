@@ -128,6 +128,7 @@ public class PostService {
                 .map(p -> {
                     PostResponse response = modelMapper.map(p, PostResponse.class);
                     response.setPostOwner(userRepository.findById(p.getUserId()).map(User::getName).orElse("Usuário Desconhecido"));
+                    response.setUserId(p.getUserId());
                     return response;
                 })
                 .toList();

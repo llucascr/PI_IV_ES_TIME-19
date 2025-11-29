@@ -1,36 +1,21 @@
-import { Button, Input } from "components";
 import { config } from "config";
-import { useUI } from "context";
 import { useEffect, useState } from "react";
 import { apiFetch } from "utils";
-import type { PostType } from "types";
 
 export const FormComunidade = ({
   refetch,
-  post,
 }: {
   refetch: () => void;
-  post?: PostType;
 }) => {
-  const ui = useUI();
-  const [error, setError] = useState(false);
-  const [title, setTitle] = useState<string>(post?.title || "");
-  const [description, setDescription] = useState<string>(post?.description || "");
-  const [text, setText] = useState<string>(post?.text || "");
+  
   const [newPost, setNewPost] = useState("");
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [loading, setLoading] = useState(true);
 
-   async function loadPosts() {
-    setLoading(true);
+  async function loadPosts() {
 
-    const { data } = await apiFetch({
+     await apiFetch({
       url: config.apiUrl + "/post/update",
       options: { method: "GET" },
     });
-
-    if (data) setPosts(data);
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -48,7 +33,7 @@ export const FormComunidade = ({
           "Content-Type": "application/json",
         },
         data: {
-          userId: "7d1a286e-396e-4a4e-bf04-02819a71a746",
+          userId: localStorage.getItem("safratechUserId"),
           title: "Moranguetes",
           description: "Morango Tango Bombado",
           text: newPost,
@@ -58,7 +43,6 @@ export const FormComunidade = ({
 
     if (error) {
       console.log(error);
-      setError(true);
     } else {
       refetch();
       setNewPost("");
@@ -93,17 +77,16 @@ export const FormComunidade = ({
               resize: "none",
             }}
           />
-          <button
+          <button className="bg-[#ffc6c6] hover:bg-rose-300 px-2 py-1 rounded-md"
             type="button"
             onClick={onSave}
             style={{
               alignSelf: "flex-end",
-              background: "#f28b82",
               padding: "8px 14px",
               border: "none",
               borderRadius: 12,
               cursor: "pointer",
-              color: "white",
+              color: "black",
             }}
           >
             Postar
