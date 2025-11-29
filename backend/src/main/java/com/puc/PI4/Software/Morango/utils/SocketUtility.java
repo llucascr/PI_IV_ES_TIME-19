@@ -2,6 +2,7 @@ package com.puc.PI4.Software.Morango.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.puc.PI4.Software.Morango.exceptions.organization.CnpjInvalid;
 import com.puc.PI4.Software.Morango.exceptions.socket.ServerOffline;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class SocketUtility {
         try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
 
             Map<String, Object> request = new HashMap<>();
-            request.put("tipo", "validarCPF");
+            request.put("tipo", "formatarCpf");
             request.put("dados", cpf);
 
             String jsonRequest = mapper.writeValueAsString(request);
@@ -68,6 +69,39 @@ public class SocketUtility {
             out.println(jsonRequest);
 
             return in.readLine();
+
+        } catch (Exception e) {
+            throw new ServerOffline("Server out of service.");
+        }
+    }
+
+    public String formatarCnpj(String cnpj) {
+        try(Socket socket = new Socket("localhost", PORTA_PADRAO)) {
+
+            Map<String, Object> request = new HashMap<>();
+            request.put("tipo", "formatarCNPJ");
+            request.put("dados", cnpj);
+
+            String jsonRequest = mapper.writeValueAsString(request);
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            out.println(jsonRequest);
+
+            JsonNode responseJson = mapper.readTree(in.readLine());
+
+            if (responseJson.has("formatado")) {
+                String valorFormatado = responseJson.get("formatado").asText();
+
+                if (valorFormatado.equals("-1")) {
+                    throw new IllegalArgumentException("CNPJ inválido ou erro na formatação.");
+                }
+
+                return valorFormatado;
+            }
+
+            return cnpj;
 
         } catch (Exception e) {
             throw new ServerOffline("Server out of service.");
