@@ -4,6 +4,7 @@ import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationReq
 import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.LoginResponse;
 import com.puc.PI4.Software.Morango.dto.response.organization.InsertIntoOrganizationResponse;
+import com.puc.PI4.Software.Morango.dto.response.user.UserRegisterResponse;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotActive;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
@@ -14,8 +15,10 @@ import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
+import com.puc.PI4.Software.Morango.utils.SocketUtility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +39,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+    private final SocketUtility socketUtility;
+
     public LoginResponse login(AuthenticationRequest data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -46,18 +51,22 @@ public class AuthenticationService {
         return new LoginResponse(token, user.getName(), user.getIdOrganization(), user.getId());
     }
 
-    public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
-        if (this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().build();
+    public UserRegisterResponse register(RegisterResquest data) {
+        if (this.userRepository.findByEmail(data.getEmail()) != null) throw new EmailInvaid("Error creating user");
+
+        if (!socketUtility.validarEmail(data.getEmail())) throw new EmailInvaid("Error creating user, invalid email");
 
         if (userRepository.findByCpf(data.getCpf()).isPresent()) throw new UserAlreadyExist("CPF invalid");
 
-        String ecryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+        String ecryptedPassword = socketUtility.criptografarSenha(data.getPassword());
+        String cpfFormatado = socketUtility.formatarCpf(data.getCpf());
+
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
                 .name(data.getName())
                 .email(data.getEmail())
                 .password(ecryptedPassword)
-                .cpf(data.getCpf())
+                .cpf(cpfFormatado)
                 .createAt(LocalDateTime.now())
                 .active(true)
                 .role(data.getRole())
@@ -66,7 +75,7 @@ public class AuthenticationService {
         userRepository.save(user);
         insertUserIntoOrganization(user.getEmail(), data.getOrganizationCnpj());
 
-        return ResponseEntity.ok().build();
+        return new UserRegisterResponse(user.getName(), "Usuário criado com sucesso!");
     }
 
     private void insertUserIntoOrganization(String employeeEmail, String organizationCnpj) {

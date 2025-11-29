@@ -5,10 +5,12 @@ import com.puc.PI4.Software.Morango.dto.response.client.ClientResponse;
 import com.puc.PI4.Software.Morango.exceptions.client.ClientAlreadyExist;
 import com.puc.PI4.Software.Morango.exceptions.client.ClientNotFound;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
+import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
 import com.puc.PI4.Software.Morango.models.Client;
 import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.repositories.ClientRepository;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
+import com.puc.PI4.Software.Morango.utils.SocketUtility;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,8 @@ public class ClientService {
 
     private final ModelMapper modelMapper;
 
+    private final SocketUtility socketUtility;
+
     public ClientResponse createClient(ClientRequest request, String idOrgazanition) {
 
         organizationRepository.findById(idOrgazanition)
@@ -39,6 +43,8 @@ public class ClientService {
             throw new ClientAlreadyExist("Client with email " + request.getEmail()
                     + " already exist in organization with id " + idOrgazanition);
         }
+
+        if (!socketUtility.validarEmail(request.getEmail())) throw new EmailInvaid("Invalid email");
 
         Client client = Client.builder()
                 .id(UUID.randomUUID().toString())
