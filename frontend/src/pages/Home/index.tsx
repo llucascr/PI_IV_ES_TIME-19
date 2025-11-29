@@ -1,31 +1,17 @@
-import { Button } from "components";
-import { useUI } from "context";
-import { FormConfiguracao } from "./form";
-
+import { InfestationChart, LotesLineChart, StatusBarChart } from "./components";
 export const HomePage = () => {
-  const ui = useUI();
-
   return (
     <div className="p-4">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
 
-        <Button
-          color="green"
-          title="Configuração"
-          onClick={() =>
-            ui.show({
-              id: "configuracao-safratech",
-              content: <FormConfiguracao />,
-              type: "sidebar",
-              options: {
-                titulo: "Configurar Aplicação (dev)",
-                position: "right",
-              },
-            })
-          }
-        />
+
       </header>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InfestationChart />
+        <LotesLineChart height={360} />
+        <StatusBarChart height={360} />
+      </div>
     </div>
   );
 };
