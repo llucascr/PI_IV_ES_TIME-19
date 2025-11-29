@@ -8,11 +8,13 @@ import com.puc.PI4.Software.Morango.dto.response.organization.OrganizationRespon
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationAlreadyExist;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotActive;
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
+import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
 import com.puc.PI4.Software.Morango.models.Organization;
 import com.puc.PI4.Software.Morango.models.User;
 import com.puc.PI4.Software.Morango.repositories.OrganizationRepository;
 import com.puc.PI4.Software.Morango.repositories.UserRepository;
+import com.puc.PI4.Software.Morango.utils.SocketUtility;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -32,7 +34,8 @@ public class OrganizationService {
 
     private final ModelMapper modelMapper;
     private final OrganizationRepository organizationRepository;
-    private final UserRepository userRepository;
+
+    private final SocketUtility socketUtility;
 
     public OrganizationResponse createOrganization(OrganizationRequest organizationRequest) {
 
@@ -40,9 +43,13 @@ public class OrganizationService {
             throw new OrganizationAlreadyExist("Organization with cnpj " + organizationRequest.getCnpj() + " already exist");
         }
 
+        if (!socketUtility.validarEmail(organizationRequest.getEmail())) throw new EmailInvaid("Email Organiztion invalid");
+
+        String cnpjFormatado = socketUtility.formatarCnpj(organizationRequest.getCnpj());
+
         Organization organization = Organization.builder()
                 .id(UUID.randomUUID().toString())
-                .cnpj(organizationRequest.getCnpj())
+                .cnpj(cnpjFormatado)
                 .name(organizationRequest.getName())
                 .email(organizationRequest.getEmail())
                 .address(organizationRequest.getAddress())

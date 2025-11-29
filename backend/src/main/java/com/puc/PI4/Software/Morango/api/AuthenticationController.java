@@ -4,6 +4,7 @@ import com.puc.PI4.Software.Morango.dto.request.Authentication.AuthenticationReq
 import com.puc.PI4.Software.Morango.dto.request.Authentication.RegisterResquest;
 import com.puc.PI4.Software.Morango.dto.request.user.EmailResponse;
 import com.puc.PI4.Software.Morango.dto.request.user.LoginResponse;
+import com.puc.PI4.Software.Morango.dto.response.user.UserRegisterResponse;
 import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.User;
@@ -38,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterResquest data) {
-        return authenticationService.register(data);
+    public ResponseEntity<UserRegisterResponse> register(@RequestBody @Valid RegisterResquest data) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.register(data));
     }
 }
