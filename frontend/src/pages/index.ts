@@ -6,3 +6,4 @@ export * from "./Cliente/index";
 export * from "./LayoutPage";
 export * from "./Monitoramento/index";
 export * from "./Usuario/index";
+export * from "./Comunidade/index";

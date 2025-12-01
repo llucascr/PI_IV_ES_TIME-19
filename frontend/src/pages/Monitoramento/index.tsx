@@ -185,17 +185,17 @@ export const Monitoramento = () => {
 
           {rowData.developmentStatus.toLocaleLowerCase() ==
             "pending_review" && (
-            <>
-              <Button
-                color="green"
-                title=""
-                icon={<CheckCircleIcon />}
-                positionIcon="left"
-                type="button"
-                onClick={() => console.log("Aprovar")}
-              />
-            </>
-          )}
+              <>
+                <Button
+                  color="green"
+                  title=""
+                  icon={<CheckCircleIcon />}
+                  positionIcon="left"
+                  type="button"
+                  onClick={() => console.log("Aprovar")}
+                />
+              </>
+            )}
         </div>
       ),
     },
@@ -235,7 +235,13 @@ export const Monitoramento = () => {
                           onClick={() =>
                             ui.show({
                               id: "update-record",
-                              content: <></>,
+                              content: (
+                                <FormMonitoramento
+                                  action="update"
+                                  refetch={refetch}
+                                  monitoramento={selectedMonitoramento}
+                                />
+                              ),
                               type: "sidebar",
                               options: {
                                 titulo: "Editar Monitoramento",
@@ -270,25 +276,25 @@ export const Monitoramento = () => {
                         />
                         {selectedMonitoramento.developmentStatus.toLocaleLowerCase() ==
                           "pending_review" && (
-                          <>
-                            <Button
-                              color="red"
-                              title="Cancelar"
-                              icon={<TrashIcon />}
-                              positionIcon="left"
-                              type="button"
-                              onClick={() => console.log("Cancelar")}
-                            />
-                            <Button
-                              color="green"
-                              title="Aprovar"
-                              icon={<CheckCircleIcon />}
-                              positionIcon="left"
-                              type="button"
-                              onClick={() => console.log("Aprovar")}
-                            />
-                          </>
-                        )}
+                            <>
+                              <Button
+                                color="red"
+                                title="Cancelar"
+                                icon={<TrashIcon />}
+                                positionIcon="left"
+                                type="button"
+                                onClick={() => console.log("Cancelar")}
+                              />
+                              <Button
+                                color="green"
+                                title="Aprovar"
+                                icon={<CheckCircleIcon />}
+                                positionIcon="left"
+                                type="button"
+                                onClick={() => console.log("Aprovar")}
+                              />
+                            </>
+                          )}
 
                         <Button
                           color="red"

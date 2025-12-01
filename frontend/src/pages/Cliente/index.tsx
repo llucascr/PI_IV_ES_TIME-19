@@ -88,15 +88,21 @@ export function Cliente() {
     return clientes.filter(
       (c) =>
         c.name.toLowerCase().includes(s) ||
-        c.email.toLowerCase().includes(s) 
+        c.email.toLowerCase().includes(s)
     );
   }, [q, clientes]);
 
   const refetch = refetchClientes;
 
+  useEffect(() => {
+    if (selectedClient) {
+      refetchLotes();
+    }
+  }, [selectedClient]);
+
+
   const handleClickCliente = (c: ClienteType) => {
     setSelectedClient(c);
-    refetchLotes();
   };
 
   const handleOpenCreateCliente = () => {
@@ -164,9 +170,8 @@ export function Cliente() {
           {dataFiltrada.map((c) => (
             <div
               key={c.id}
-              className={`flex items-center justify-between rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-100 transition cursor-pointer ${
-                selectedClient?.id === c.id ? "bg-gray-200" : ""
-              }`}
+              className={`flex items-center justify-between rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-100 transition cursor-pointer ${selectedClient?.id === c.id ? "bg-gray-200" : ""
+                }`}
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-gray-900">

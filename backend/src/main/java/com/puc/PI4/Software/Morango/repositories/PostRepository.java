@@ -22,6 +22,6 @@ public interface PostRepository extends MongoRepository<Post, String> {
     @Query(value = "{ $or: [ { 'title': { $regex: ?0, $options: 'i' } }, { 'description': { $regex: ?0, $options: 'i' } } ] }", sort = "{'createAt':  -1}")
     Page<Post> searchByTitleOrDescriptionRegex(String query, Pageable pageable);
 
-    @Query("{ '_id': ?1, 'userId': ?0 }")
+    @Query("{ 'id': ?1, 'userId': ?0 }")
     Optional<Post> findByUserAndPostId(String userId, String postId);
 }

@@ -347,7 +347,7 @@ export const FormMonitoramento = ({
               color="yellow"
               title="Cancelar"
               type="button"
-              onClick={() => ui.hide("modal", `${action}-praga`)}
+              onClick={() => ui.hide("sidebar", `${action}-record`)}
             />
             <Button
               color="blue"

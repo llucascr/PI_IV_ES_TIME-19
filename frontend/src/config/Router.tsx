@@ -7,6 +7,7 @@ import {
   Cliente,
   Monitoramento,
   Usuario,
+  Comunidade,
 } from "pages";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getAuthToken } from "../utils/auth";
@@ -61,6 +62,11 @@ export const Router = createBrowserRouter([
       {
         path: "/cliente",
         Component: Cliente,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/comunidade",
+        Component: Comunidade,
         errorElement: <ErrorPage />,
       },
     ],
