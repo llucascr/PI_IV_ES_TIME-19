@@ -1,0 +1,58 @@
+package com.puc.PI4.Software.Morango.api;
+
+import com.puc.PI4.Software.Morango.dto.request.batch.BatchRequest;
+import com.puc.PI4.Software.Morango.dto.response.batch.BatchResponse;
+import com.puc.PI4.Software.Morango.services.BatchService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("api/v1/batch")
+public class BatchController {
+
+    private final BatchService batchService;
+
+    @PostMapping("/create")
+    public ResponseEntity<BatchResponse> createBatch(@RequestBody BatchRequest batchRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(batchService.createBatch(batchRequest));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<BatchResponse> updateBatch(@RequestParam String batchId, @RequestBody BatchRequest batchRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.updateBatch(batchId, batchRequest));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<BatchResponse> deleteBatch(@RequestParam String batchId) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.deleteBatch(batchId));
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<BatchResponse> findBatch(@RequestParam String batchId) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.findBatchById(batchId));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<BatchResponse>> listAllBatches(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfBatches
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.listAllBatches(page, numberOfBatches).getContent());
+    }
+
+    @GetMapping("/listBy")
+    public ResponseEntity<List<BatchResponse>> listBatchesByOrgAndClient(
+            @RequestParam(defaultValue = "", required = false) String organizationId,
+            @RequestParam(defaultValue = "", required = false) String clientId,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int numberOfBatches
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(batchService.listBatchesByOrgAndClient(organizationId, clientId, page, numberOfBatches).getContent());
+    }
+
+}

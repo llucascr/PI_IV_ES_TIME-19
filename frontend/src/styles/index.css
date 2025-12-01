@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-card: oklch(0.21 0.006 285.885);
+  --color-radius: 0.65rem;
+  --color-background: oklch(98.463% 0.00181 249.248);
+  --color-foreground: oklch(0.141 0.005 285.823);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.141 0.005 285.823);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.141 0.005 285.823);
+  --color-primary: oklch(88.33% 0.19835 152.954);
+  --color-primary-foreground: oklch(92.236% 0.10265 153.803);
+  --color-secondary: oklch(0.967 0.001 286.375);
+  --color-secondary-foreground: oklch(0.21 0.006 285.885);
+  --color-muted: oklch(0.967 0.001 286.375);
+  --color-muted-foreground: oklch(0.552 0.016 285.938);
+  --color-accent: oklch(0.967 0.001 286.375);
+  --color-accent-hover: oklch(88.866% 0.00145 285.331);
+  --color-accent-foreground: oklch(0.21 0.006 285.885);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-border: oklch(0.92 0.004 286.32);
+  --color-input: oklch(0.92 0.004 286.32);
+  --color-ring: oklch(0.723 0.219 149.579);
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
+  --color-sidebar: oklch(0.985 0 0);
+  --color-sidebar-foreground: oklch(0.141 0.005 285.823);
+  --color-sidebar-primary: oklch(0.723 0.219 149.579);
+  --color-sidebar-primary-foreground: oklch(0.982 0.018 155.826);
+  --color-sidebar-accent: oklch(0.967 0.001 286.375);
+  --color-sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --color-sidebar-border: oklch(0.92 0.004 286.32);
+  --color-sidebar-ring: oklch(0.723 0.219 149.579);
+  --color-warning: oklch(0.75 0.15 65);
+  --color-warning-foreground: oklch(0.15 0 0);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; */
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+@layer utilities {
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-fadeOut {
+    animation: fadeOut 3s ease-in forwards;
+  }
+}
