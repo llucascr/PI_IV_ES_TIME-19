@@ -10,14 +10,13 @@ import { useFetch } from "hooks";
 import type { ClienteType, LoteType } from "types/cliente";
 import { getOrganizacao } from "utils";
 
-const ORG_ID = getOrganizacao()?.id;
-
 const fmt = new Intl.NumberFormat("pt-BR", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
 export function Cliente() {
+  const ORG_ID = getOrganizacao()?.id;
   const ui = useUI();
 
   const [q, setQ] = useState("");

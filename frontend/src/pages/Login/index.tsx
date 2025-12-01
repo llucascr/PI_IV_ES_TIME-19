@@ -143,7 +143,7 @@ export const LoginPage = () => {
             {loading ? "Entrando..." : "Entrar"}
           </button>
 
-          <a href="#" className="text-red-500 hover:underline mt-1">
+          <a href="/ResetPass/resetPassEmail" className="text-red-500 hover:underline mt-1">
             Esqueceu a senha?
           </a>
         </div>

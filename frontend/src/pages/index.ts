@@ -7,3 +7,5 @@ export * from "./LayoutPage";
 export * from "./Monitoramento/index";
 export * from "./Usuario/index";
 export * from "./Comunidade/index";
+export * from "./ResetPass/resetPassEmail/index";
+export * from "./ResetPass/resetPassNewPass/index";
