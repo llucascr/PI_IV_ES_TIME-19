@@ -8,6 +8,8 @@ import {
   Monitoramento,
   Usuario,
   Comunidade,
+  ResetPassEmailPage,
+  ResetNewPassPage,
 } from "pages";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getAuthToken } from "../utils/auth";
@@ -29,7 +31,7 @@ export const Router = createBrowserRouter([
     id: "root",
     path: "/",
     Component: LayoutPage,
-     loader: () => {
+    loader: () => {
       const token = getAuthToken();
 
       if (!token || isTokenExpired(token)) {
@@ -76,5 +78,15 @@ export const Router = createBrowserRouter([
     id: "login",
     path: "/login",
     Component: LoginPage,
+  },
+  {
+    id: "resetPassNewPass",
+    path: "/ResetPass/resetPassNewPass",
+    Component: ResetNewPassPage,
+  },
+  {
+    id: "resetPassEmail",
+    path: "/ResetPass/resetPassEmail",
+    Component: ResetPassEmailPage,
   },
 ]);
