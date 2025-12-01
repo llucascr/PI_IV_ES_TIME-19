@@ -45,6 +45,33 @@ public class TokenService {
         }
     }
 
+    public String generateResetToken(String email) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.create()
+                    .withIssuer("reset-api")
+                    .withSubject(email)
+                    .withExpiresAt(Instant.now()
+                            .plusSeconds(600))
+                    .sign(algorithm);
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Error while generating reset token," + exception);
+        }
+    }
+
+    public String validateResetToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("reset-api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+        } catch (JWTVerificationException exception) {
+            return "";
+        }
+    }
+
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

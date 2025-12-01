@@ -35,6 +35,8 @@ public class User implements UserDetails {
     private LocalDateTime updateAt;
     private Boolean active;
     private UserRole role;
+    private String resetPasswordToken;
+    private Long resetPasswordExpiration;
 
     private String idOrganization;
 
