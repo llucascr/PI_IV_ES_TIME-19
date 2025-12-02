@@ -1,15 +1,17 @@
 import { Button, DataTable, StatusPulseDot, type Column } from "components";
 import { config } from "config";
-import { useUI } from "context";
+import { useNotification, useUI } from "context";
 import { useFetch } from "hooks";
 import { useState } from "react";
-import { NotePencilIcon } from "@phosphor-icons/react";
+import { CheckCircleIcon, NotePencilIcon, XCircleIcon } from "@phosphor-icons/react";
 import type { OrganizacaoByIdType, UsuarioType } from "types";
 import { FormUsuario } from "./form";
-import { getOrganizacao } from "utils";
+import { apiFetch, getOrganizacao } from "utils";
+import { v4 } from "uuid";
 
 export const Usuario = () => {
   const ui = useUI();
+  const { show } = useNotification();
   const [search, setSearch] = useState<string>("");
   const [selectedUsuario, setSelectedUsuario] = useState<UsuarioType>();
 
@@ -24,6 +26,33 @@ export const Usuario = () => {
       },
     },
   });
+
+  async function handleUpdateStatus(id: React.Key, status: "enable" | "disabled") {
+    const { error } = await apiFetch({
+      url: config.apiUrl + "/user/" + status,
+      options: {
+        method: "PATCH",
+        params: {
+          userId: id,
+        },
+      },
+    });
+
+    if (error) {
+      show!(
+        v4(),
+        `Deletar ${status === "enable" ? "ativar" : "desativar"}`,
+        "error",
+        `Não foi possível ${status === "enable" ? "ativar" : "desativar"}.`
+      );
+    } else {
+      refetch();
+
+      show!(v4(), `Deletar ${status === "enable" ? "ativar" : "desativar"}`, "success", `${status === "enable" ? "ativar" : "desativar"} com sucesso.`);
+    }
+
+    setSelectedUsuario(undefined);
+  }
 
   const columns: Column<UsuarioType>[] = [
     {
@@ -76,6 +105,31 @@ export const Usuario = () => {
               })
             }
           />
+
+          {rowData.id != localStorage.getItem("safratechUserId") ? (
+            <>
+              {!rowData.active ? (
+                <Button
+                  color="green"
+                  title=""
+                  icon={<CheckCircleIcon />}
+                  positionIcon="left"
+                  type="button"
+                  onClick={() => handleUpdateStatus(rowData.id, "enable")}
+                />
+              ) : (
+                <Button
+                  color="red"
+                  title=""
+                  icon={<XCircleIcon />}
+                  positionIcon="left"
+                  type="button"
+                  onClick={() => handleUpdateStatus(rowData.id, "disabled")}
+                />
+              )}
+            </>
+          ) : <></>}
+
         </div>
       ),
     },
@@ -137,6 +191,31 @@ export const Usuario = () => {
                               })
                             }
                           />
+
+                          {selectedUsuario.id != localStorage.getItem("safratechUserId") ? (
+                            <>
+                              {!selectedUsuario.active ? (
+                                <Button
+                                  color="green"
+                                  title="Ativar"
+                                  icon={<CheckCircleIcon />}
+                                  positionIcon="left"
+                                  type="button"
+                                  onClick={() => handleUpdateStatus(selectedUsuario.id, "enable")}
+                                />
+                              ) : (
+                                <Button
+                                  color="red"
+                                  title="Desativar"
+                                  icon={<XCircleIcon />}
+                                  positionIcon="left"
+                                  type="button"
+                                  onClick={() => handleUpdateStatus(selectedUsuario.id, "disabled")}
+                                />
+                              )}
+                            </>
+                          ) : <></>}
+
                         </div>
                       )}
                     </>
