@@ -3,6 +3,7 @@ import { apiFetch } from "utils";
 import { Button } from "components";
 import { NotePencilIcon, TrashIcon } from "@phosphor-icons/react";
 import { config } from "config";
+import { FormComunidade } from "./form";
 
 interface PostCardProps {
     post: PostType;
