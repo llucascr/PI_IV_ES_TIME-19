@@ -75,6 +75,7 @@ export const Monitoramento = () => {
       sortable: true,
       body: (rowData) => (
         <StatusPulseDot
+          developmentStatus={rowData.developmentStatus}
           status={getRecordStatusDescription(rowData.developmentStatus)}
         />
       ),
