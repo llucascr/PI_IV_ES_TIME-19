@@ -102,12 +102,42 @@ public class UserService {
                         .orElseThrow(() -> new OrganizationNotFound("Organization with id " + user.getIdOrganization() + " not found"));
 
         User organizationUser = organization.getEmployees().stream()
-                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow();
+                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow(
+                        () ->new UserNotFound("User with id " + id + " found in the database, but not listed in the organization's employees.")
+                );
 
         user.setActive(false);
+        user.setUpdateAt(LocalDateTime.now());
         userRepository.save(user);
 
         organizationUser.setActive(false);
+        organizationUser.setUpdateAt(LocalDateTime.now());
+        organizationRepository.save(organization);
+
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    public UserResponse enableUser(String id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFound("User with id " + id + " not found"));
+
+        if (user.getIdOrganization() == null) throw new UserNotInOrganization("User with id " + id + " not in organization");
+
+        Organization organization =  organizationRepository.findById(user.getIdOrganization())
+                .orElseThrow(() -> new OrganizationNotFound("Organization with id " + user.getIdOrganization() + " not found"));
+
+        User organizationUser = organization.getEmployees().stream()
+                .filter(u -> u.getId().equals(user.getId())).findFirst().orElseThrow(
+                        () ->new UserNotFound("User with id " + id + " found in the database, but not listed in the organization's employees.")
+                );
+
+        user.setActive(true);
+        user.setUpdateAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        organizationUser.setActive(true);
+        organizationUser.setUpdateAt(LocalDateTime.now());
         organizationRepository.save(organization);
 
         return modelMapper.map(user, UserResponse.class);
