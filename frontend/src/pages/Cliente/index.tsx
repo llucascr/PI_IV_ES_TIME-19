@@ -168,6 +168,18 @@ export function Cliente() {
     });
   };
 
+  const handleOpenUpdateCliente = () => {
+    ui.show({
+      id: "update-cliente",
+      content: <FormCliente action="update" refetch={refetch} cliente={selectedClient}/>,
+      type: "modal",
+      options: {
+        titulo: "Atualizar Cliente",
+        position: "right",
+      },
+    });
+  };
+
   return (
     <div className="flex min-h-screen pb-5">
       {/* Coluna esquerda: clientes */}
@@ -213,12 +225,21 @@ export function Cliente() {
                   {c.active ? "Ativo" : "Inativo"}
                 </p>
               </div>
-              <button
-                onClick={() => handleClickCliente(c)}
-                className="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-white"
-              >
-                Detalhes
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleClickCliente(c)}
+                  className="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-white"
+                >
+                  Detalhes
+                </button>
+
+                <button
+                  onClick={handleOpenUpdateCliente}
+                  className="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-white"
+                >
+                  Atualizar
+                </button>
+              </div>
             </div>
           ))}
 
@@ -243,6 +264,7 @@ export function Cliente() {
             <p className="text-xs text-gray-400 mb-5">
               {selectedClient.active ? "Cliente ativo" : "Cliente inativo"}
             </p>
+    
 
             <h3 className="text-sm uppercase text-gray-400 mb-2">
               Lotes cadastrados:
