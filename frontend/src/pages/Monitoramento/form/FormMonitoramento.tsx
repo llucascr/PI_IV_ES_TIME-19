@@ -12,6 +12,10 @@ import type {
 } from "types";
 import { apiFetch, getDateTimeInputFormat, getOrganizacao } from "utils";
 
+
+
+import recordStatus from "../../../assets/recordStatus.json";
+
 type SelectOptionType = {
   value: RecordStatusType;
   name: string;
@@ -36,11 +40,11 @@ type FormFields = {
 };
 
 const optionsDevelopmentStatus: SelectOptionType[] = [
-  { value: "scheduled", name: "Agendado" },
-  { value: "in_progress", name: "Em Progresso" },
-  { value: "infested", name: "Infestação" },
-  { value: "loss", name: "Controlado" },
-  { value: "completed", name: "Concluído" },
+  { value: "scheduled", name: recordStatus.scheduled },
+  { value: "in_progress", name: recordStatus.in_progress },
+  { value: "infested", name: recordStatus.infested },
+  { value: "loss", name: recordStatus.loss },
+  { value: "completed", name: recordStatus.completed },
 ];
 
 export const FormMonitoramento = ({
@@ -59,8 +63,8 @@ export const FormMonitoramento = ({
   const [developmentStatus, setDevelopmentStatus] = useState<SelectOptionType>(
     monitoramento
       ? optionsDevelopmentStatus.find(
-          (it) => it.value == monitoramento.developmentStatus
-        ) ?? optionsDevelopmentStatus[0]
+        (it) => it.value == monitoramento.developmentStatus
+      ) ?? optionsDevelopmentStatus[0]
       : optionsDevelopmentStatus[0]
   );
 
