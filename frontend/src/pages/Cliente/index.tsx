@@ -1,14 +1,15 @@
 // src/pages/Cliente.tsx
 import { useEffect, useMemo, useState } from "react";
-import { MagnifyingGlass, PlusCircleIcon } from "@phosphor-icons/react";
+import { MagnifyingGlass, NotePencilIcon, PlusCircleIcon, Trash } from "@phosphor-icons/react";
 import { Button } from "components";
-import { useUI } from "context";
+import { useNotification, useUI } from "context";
 import { FormCliente } from "./forms/formClient";
 import { config } from "config";
 import { FormBatch } from "./forms/formBatch";
 import { useFetch } from "hooks";
 import type { ClienteType, LoteType } from "types/cliente";
-import { getOrganizacao } from "utils";
+import { apiFetch, getOrganizacao } from "utils";
+import { v4 } from "uuid";
 
 const fmt = new Intl.NumberFormat("pt-BR", {
   minimumFractionDigits: 2,
@@ -18,6 +19,7 @@ const fmt = new Intl.NumberFormat("pt-BR", {
 export function Cliente() {
   const ORG_ID = getOrganizacao()?.id;
   const ui = useUI();
+  const { show } = useNotification();
 
   const [q, setQ] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClienteType | null>(null);
@@ -67,6 +69,36 @@ export function Cliente() {
     () => (lotesData ? (lotesData as unknown as LoteType[]) : []),
     [lotesData]
   );
+
+  async function deletarLote(id: React.Key) {
+    const { error } = await apiFetch({
+      url: config.apiUrl + "/batch/delete",
+      options: {
+        method: "DELETE",
+        params: {
+          batchId: id,
+        },
+      },
+    });
+
+    if (error) {
+      show!(
+        v4(),
+        "Deletar Lote",
+        "error",
+        "Não foi possível deletar o lote."
+      );
+    } else {
+      refetchLotes();
+
+      show!(
+        v4(),
+        "Deletar Lote",
+        "error",
+        "Lote deletado com sucesso."
+      );
+    }
+  }
 
   useEffect(() => {
     if (clientesError) {
@@ -223,23 +255,73 @@ export function Cliente() {
             )}
 
             <div className="space-y-2 mb-10">
-              {lotes.map((lote) => (
-                <div
-                  key={lote.id}
-                  className="rounded-md bg-gray-700 px-3 py-2 text-sm flex items-center justify-between"
-                >
-                  <span>{lote.name}</span>
-                  <span className="text-gray-300">
-                    {fmt.format(lote.area)} km²
-                  </span>
-                </div>
-              ))}
+              {lotes.map((lote) => {
+                const statusPT: Record<string, string> = {
+                  ACTIVE: "Ativo",
+                  SOLD: "Vendido",
+                  RESERVED: "Reservado",
+                  DEACTIVATED: "Desativado",
+                };
 
-              {!lotesLoading && lotes.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">
-                  Nenhum lote cadastrado para este cliente.
-                </p>
-              ) : null}
+                return (
+                  <div
+                    key={lote.id}
+                    className="rounded-md bg-gray-700 px-3 py-2 text-sm flex flex-col gap-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-white font-medium">{lote.name}</span>
+
+                      <span
+                        className={`text-xs px-2 py-1 rounded-md
+                          ${lote.situation === "DEACTIVATED" ? "bg-red-600 text-white" : "bg-gray-600 text-gray-200"}
+                        `}
+                      >
+                        {statusPT[lote.situation]}
+                      </span>
+
+                    </div>
+
+                    <span className="text-gray-300">{fmt.format(lote.area)} km²</span>
+
+                    <div className="flex gap-2 mt-2">
+                      <Button
+                        color="blue"
+                        title=""
+                        icon={<NotePencilIcon />}
+                        positionIcon="left"
+                        type="button"
+                        onClick={() =>
+                          ui.show({
+                            id: "update-lote",
+                            content: (
+                              <FormBatch
+                                action="update"
+                                lote={lote}
+                                clientId={selectedClient!.id}
+                                refetch={refetchLotes}
+                              />
+                            ),
+                            type: "modal",
+                            options: {
+                              titulo: "Editar Lote",
+                              position: "right",
+                            },
+                          })
+                        }
+                      />
+
+                      <Button
+                        color="red"
+                        title=""
+                        icon={<Trash />}
+                        positionIcon="left"
+                        type="button"
+                        onClick={() => deletarLote(lote.id)}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="fixed bottom-10 right-12">
