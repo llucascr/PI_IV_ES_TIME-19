@@ -39,13 +39,12 @@ type FormFields = {
   evaluatedPlantsCount?: number;
 };
 
-const optionsDevelopmentStatus: SelectOptionType[] = [
-  { value: "scheduled", name: recordStatus.scheduled },
-  { value: "in_progress", name: recordStatus.in_progress },
-  { value: "infested", name: recordStatus.infested },
-  { value: "loss", name: recordStatus.loss },
-  { value: "completed", name: recordStatus.completed },
-];
+const optionsDevelopmentStatus: SelectOptionType[] = Object.entries(
+  recordStatus
+).map(([key, value]) => ({
+  value: key as RecordStatusType,
+  name: value,
+}));
 
 export const FormMonitoramento = ({
   action,
@@ -63,7 +62,7 @@ export const FormMonitoramento = ({
   const [developmentStatus, setDevelopmentStatus] = useState<SelectOptionType>(
     monitoramento
       ? optionsDevelopmentStatus.find(
-        (it) => it.value == monitoramento.developmentStatus
+        (it) => it.value == monitoramento.developmentStatus.toLocaleLowerCase()
       ) ?? optionsDevelopmentStatus[0]
       : optionsDevelopmentStatus[0]
   );
