@@ -38,7 +38,7 @@ export function StatusBarChart({ height = 320 }: Props) {
 
       <div style={{ width: "100%", height }}>
         <ResponsiveContainer>
-          <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 24 }}>
+          <BarChart data={data} margin={{ top: 18, right: 20, left: 10, bottom: 24 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="status"
