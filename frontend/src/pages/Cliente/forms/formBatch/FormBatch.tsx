@@ -1,10 +1,21 @@
 // src/pages/Cliente/form.tsx
-import { Button, Input } from "components";
+import { Button, Input, Select } from "components";
 import { config } from "config";
 import { useUI } from "context";
 import { useState } from "react";
 import type { LoteType } from "types";
-import { apiFetch } from "utils";
+import { apiFetch, getOrganizacao } from "utils";
+
+type StatusOption = {
+    value: "SOLD" | "RESERVED" | "DEACTIVATED";
+    name: string;
+};
+
+const statusOptions: StatusOption[] = [
+    { value: "SOLD", name: "Vendido" },
+    { value: "RESERVED", name: "Reservado" },
+    { value: "DEACTIVATED", name: "Desativado" },
+];
 
 export const FormBatch = ({
     action,
@@ -12,16 +23,23 @@ export const FormBatch = ({
     lote,
     clientId,
 }: {
-    action: "create";
+    action: "create" | "update";
     refetch: () => void;
     lote?: LoteType;
     clientId: React.Key;
 }) => {
     const ui = useUI();
+
     const [error, setError] = useState<boolean>(false);
     const [nome, setNome] = useState<string>(lote?.name || "");
     const [area, setArea] = useState<string>(
         lote?.area !== undefined ? String(lote.area) : ""
+    );
+
+    const [status, setStatus] = useState<StatusOption>(
+        lote
+            ? statusOptions.find((s) => s.value === lote.situation) ?? statusOptions[0]
+            : statusOptions[0]
     );
 
     async function onSave(e: any) {
@@ -30,15 +48,17 @@ export const FormBatch = ({
         const { error } = await apiFetch({
             url: config.apiUrl + "/batch/" + action,
             options: {
-                method: "POST",
+                method: action === "create" ? "POST" : "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                params: action === "update" ? { batchId: lote?.id } : undefined,
                 data: {
                     name: nome,
                     area: Number(area),
-                    organizationId: "4b3fe7de-1c28-4fb0-80c3-427ee7d0627e",
-                    clientId: clientId,
+                    situation: status.value,
+                    organizationId: getOrganizacao()?.id,
+                    clientId,
                 },
             },
         });
@@ -71,8 +91,18 @@ export const FormBatch = ({
                 required
                 placeholder="Área"
                 type="number"
+                min={0}
                 value={area}
                 onChange={(e) => setArea(e.target.value)}
+            />
+
+            <Select<StatusOption>
+                title="Status"
+                field="name"
+                id="status"
+                value={status.name}
+                onChange={(opt) => setStatus(opt)}
+                options={statusOptions}
             />
 
             {error && (
