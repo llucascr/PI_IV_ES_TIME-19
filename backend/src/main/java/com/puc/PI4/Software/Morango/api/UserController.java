@@ -42,4 +42,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.disableUser(userId));
     }
 
+    @PatchMapping("/enable")
+    public ResponseEntity<UserResponse> enableUser(@RequestParam String userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.enableUser(userId));
+    }
+
 }
