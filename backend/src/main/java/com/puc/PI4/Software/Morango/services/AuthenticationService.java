@@ -9,6 +9,7 @@ import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationIsNotAct
 import com.puc.PI4.Software.Morango.exceptions.organization.OrganizationNotFound;
 import com.puc.PI4.Software.Morango.exceptions.user.EmailInvaid;
 import com.puc.PI4.Software.Morango.exceptions.user.UserAlreadyExist;
+import com.puc.PI4.Software.Morango.exceptions.user.UserIsNotActive;
 import com.puc.PI4.Software.Morango.exceptions.user.UserNotFound;
 import com.puc.PI4.Software.Morango.infra.security.TokenService;
 import com.puc.PI4.Software.Morango.models.Organization;
@@ -46,6 +47,11 @@ public class AuthenticationService {
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var user = (User) auth.getPrincipal();
+        if(!user.getActive()){
+            throw new UserIsNotActive("User is disabled");
+        }
+
+
         var token = tokenService.generateToken(user);
 
         return new LoginResponse(token, user.getName(), user.getIdOrganization(), user.getId());

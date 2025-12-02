@@ -13,7 +13,7 @@ export const FormCliente = ({
 }: {
   action: "update" | "create";
   refetch: () => void;
-  cliente?: ClienteType;
+  cliente?: ClienteType | null;
 }) => {
   const ui = useUI();
   const [error, setError] = useState<boolean>(false);
@@ -34,7 +34,7 @@ export const FormCliente = ({
         },
         params: cliente
           ? {
-              clientId: cliente.id,
+              idClient: cliente.id,
               idOrganization: getOrganizacao()?.id,
             }
           : {
